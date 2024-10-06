@@ -24,6 +24,7 @@ My research interest includes Efficient Computer Vision and Inference/Training S
 # ⏩ Research Highlight
 
 - Efficient Dataset Condensation: &nbsp;🎉🎉: [[Elucidated Dataset Condensation]](https://arxiv.org/abs/2404.13733) and [[G-VBSM]](https://arxiv.org/abs/2311.17950).
+- Knowledge Distillation: &nbsp;🎉🎉: [[CCD]](https://openaccess.thecvf.com/content/ACCV2022/html/Li_What_Role_Does_Data_Augmentation_Play_in_Knowledge_Distillation_ACCV_2022_paper.html) and [[TST]](https://arxiv.org/abs/2212.05422).
 - Diffusion-Related Work: &nbsp;🎉🎉: [[Catch-up Distillation]](https://arxiv.org/abs/2305.10769) and [[DiffuseExpand]](https://arxiv.org/abs/2304.13416).
 
 # 📝 Selected Publications
@@ -89,7 +90,7 @@ Jiao Xie, Linrui Gong, **Shitong Shao**, Shaohui Lin, Linkai Luo
 
 > **TL;DR**: We propose a novel knowledge transfer framework that introduces continuous normalizing flows for progressive knowledge transformation and leverages multi-step sampling strategies to achieve precision knowledge transfer.
 
-### Rethinking Centered Kernel Alignment in Knowledge Distillation [[Arxiv]](https://arxiv.org/abs/2401.11824)
+### Rethinking Centered Kernel Alignment in Knowledge Distillation [[IJCAI 2024 oral]](https://arxiv.org/abs/2401.11824)
 
 Zikai Zhou, Yunhang Shen, **Shitong Shao**, Huanran Chen, Linrui Gong, Shaohui Lin
 
@@ -105,7 +106,7 @@ Zikai Zhou, Yunhang Shen, **Shitong Shao**, Huanran Chen, Linrui Gong, Shaohui L
 
 ### Catch-up distillation: You only need to train once for accelerating sampling [[Arxiv]](https://arxiv.org/abs/2305.10769) [[Code]](https://github.com/shaoshitong/Catch-Up-Distillation) 
 
-<span class='show_paper_citations' data='hmUOaNcAAAAJ:ufrVoPGSRksC'></span>
+<!-- <span class='show_paper_citations' data='hmUOaNcAAAAJ:ufrVoPGSRksC'>Citation</span> -->
 
 **Shitong Shao**, Xu Dai, Shouyi Yin, Lujun Li, Huanran Chen, Yang Hu
 
