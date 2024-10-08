@@ -25,7 +25,8 @@ My research interest includes Efficient Computer Vision and Inference/Training S
 
 - Efficient Dataset Condensation: &nbsp;🎉🎉: [[Elucidated Dataset Condensation]](https://arxiv.org/abs/2404.13733) and [[G-VBSM]](https://arxiv.org/abs/2311.17950).
 - Knowledge Distillation: &nbsp;🎉🎉: [[CCD]](https://openaccess.thecvf.com/content/ACCV2022/html/Li_What_Role_Does_Data_Augmentation_Play_in_Knowledge_Distillation_ACCV_2022_paper.html) and [[TST]](https://arxiv.org/abs/2212.05422).
-- Diffusion-Related Work: &nbsp;🎉🎉: [[Catch-up Distillation]](https://arxiv.org/abs/2305.10769) and [[DiffuseExpand]](https://arxiv.org/abs/2304.13416).
+- Diffusion-Related Work: &nbsp;🎉🎉: [[IV-mixed Sampler]](https://arxiv.org/abs/2410.04171),  [[Catch-up Distillation]](https://arxiv.org/abs/2305.10769) and [[DiffuseExpand]](https://arxiv.org/abs/2304.13416).
+
 
 # 📝 Selected Publications
 
@@ -97,6 +98,12 @@ Zikai Zhou, Yunhang Shen, **Shitong Shao**, Huanran Chen, Linrui Gong, Shaohui L
 > **TL;DR**: This paper first provides a theoretical perspective to illustrate the effectiveness of CKA, which decouples CKA to the upper bound of Maximum Mean Discrepancy~(MMD) and a constant term.
 
 ## Diffusion Model
+
+### IV-Mixed Sampler: Leveraging Image Diffusion Models for Enhanced Video Synthesis [[Arxiv]](https://arxiv.org/abs/2410.04171) [[Code]](https://github.com/shaoshitong/IV-mixed-Sampler)
+
+**Shitong Shao**, Zikai Zhou, Lichen Bai, Haoyi Xiong, Zeke Xie
+
+> **TL;DR**: We propose IV-mixed Sampler, which leverages the strengths of image diffusion models (IDMs) to assist VDMs surpass their current capabilities.
 
 ### Expanding dataset for 2D medical image segmentation using diffusion models [[IJCAI 2023 workshop]](https://arxiv.org/abs/2304.13416) [[Code]](https://github.com/shaoshitong/DiffuseExpand).
 
