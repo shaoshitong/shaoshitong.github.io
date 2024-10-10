@@ -19,7 +19,7 @@ redirect_from:
 <!-- 
 <span class='show_paper_citations' data='DhtAFkwAAAAJ:ALROH1vI_8AC'></span> -->
 
-My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>110+</span></strong></a>
+My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>120+</span></strong></a>
 
 # ⏩ Research Highlight
 
@@ -96,6 +96,10 @@ Jiao Xie, Linrui Gong, **Shitong Shao**, Shaohui Lin, Linkai Luo
 Zikai Zhou, Yunhang Shen, **Shitong Shao**, Huanran Chen, Linrui Gong, Shaohui Lin
 
 > **TL;DR**: This paper first provides a theoretical perspective to illustrate the effectiveness of CKA, which decouples CKA to the upper bound of Maximum Mean Discrepancy~(MMD) and a constant term.
+
+### Auto-DAS: Automated Proxy Discovery for Training-free Distillation-aware Architecture Search [[ECCV]](https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/00676.pdf)
+
+> **TL;DR**: This paper searches through evolutionary algorithms thereby determining the best matching function for knowledge distillation..
 
 ## Diffusion Model
 
