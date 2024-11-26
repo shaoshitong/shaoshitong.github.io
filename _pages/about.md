@@ -19,7 +19,7 @@ redirect_from:
 <!-- 
 <span class='show_paper_citations' data='DhtAFkwAAAAJ:ALROH1vI_8AC'></span> -->
 
-My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>120+</span></strong></a>
+My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>150+</span></strong></a>
 
 # ⏩ Research Highlight
 
