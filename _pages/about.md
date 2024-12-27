@@ -19,7 +19,7 @@ redirect_from:
 <!-- 
 <span class='show_paper_citations' data='DhtAFkwAAAAJ:ALROH1vI_8AC'></span> -->
 
-My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>150+</span></strong></a>
+My research interest includes Efficient Computer Vision and Inference/Training Scaling Laws. My google scholar: <a href='https://scholar.google.com/citations?user=hmUOaNcAAAAJ'>google scholar citations <strong><span id='total_cit'>170+</span></strong></a>
 
 # ⏩ Research Highlight
 
@@ -135,6 +135,13 @@ Buhua Liu, **Shitong Shao**, Bao Li, Lichen Bai, Haoyi Xiong, James Kwok, Sumi H
 
 > **TL;DR**: A survey of preference alignment in diffusion models.
 
+## Masked Generative Transformer
+
+### Bag of Design Choices for Inference of High-Resolution Masked Generative Transformer
+
+**Shitong Shao**, Zikai Zhou, Tian Ye, Lichen Bai, Zhiqiang Xu, Zeke Xie
+
+> **TL;DR**: Elucidate the design choices for inference of masked generative transformer.
 
 # 📖 Educations
 
