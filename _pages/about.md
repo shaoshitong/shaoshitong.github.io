@@ -24,6 +24,13 @@ latest_posts:
   enabled: false
 ---
 
+<div class="anime-background" aria-hidden="true">
+  <video autoplay muted loop playsinline preload="auto" poster="{{ '/assets/img/shitong-shao-anime.png' | relative_url }}">
+    <source src="{{ '/assets/video/anime-background.mp4' | relative_url }}" type="video/mp4">
+  </video>
+  <div class="anime-background__overlay"></div>
+</div>
+
 I am **Shitong Shao (Sutton)**, a Ph.D. student in Data Science and Analytics at **HKUST(GZ)**, advised by Prof. Zeke Xie. My research focuses on efficient generative modeling, with an emphasis on video diffusion, model distillation, efficient sampling, and production-ready generation systems.
 
 My work spans the full path from method design to deployment. Recent systems and techniques have contributed to real-world video-generation products at **First-Intelligence** and **Hedra**, including HYVideo-1.5 and Character-C3.
@@ -62,7 +69,7 @@ _Apr. 22, 2026 – Present_<br>
 Research on GAN distillation for efficient generative modeling.
 
 **Research Scientist Intern · First-Intelligence**<br>
-_Oct. 2025 – Present_<br>
+_Oct. 2025 – Apr. 1, 2026_<br>
 Real-time generation and efficient deployment for HYVideo-1.5, including four-step video distillation and a 4.5×-accelerated VAE.
 
 **Research Scientist Intern · Hedra**<br>
