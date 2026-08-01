@@ -34,6 +34,7 @@ Use the corresponding natural Chinese wording:
 
 - Build the Jekyll site through the repository's deployment workflow.
 - Confirm both homepages contain the new Seed wording.
-- Confirm the deployed CSS contains the new desktop and mobile surface opacity values.
+- Confirm the deployed CSS contains the 65% desktop and 74% mobile surface opacity values and `backdrop-filter: blur(3px)`.
+- Confirm computed styles apply `text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35)` in dark mode and `text-shadow: none` in light mode.
 - Check that the video background and reduced-motion fallback remain intact.
-- Visually inspect the homepage at a representative desktop width of `1440px` and mobile width of `390px`, pausing on both relatively bright and dark video frames. Headings, body copy, links, and publication metadata must remain comfortably readable without visible blending into the background.
+- In both light and dark modes, visually inspect the homepage at a representative desktop width of `1440px` and mobile width of `390px`, pausing on both relatively bright and dark video frames. Headings, body copy, links, and publication metadata must remain comfortably readable without visible blending into the background.
