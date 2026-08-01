@@ -35,7 +35,7 @@ body:has(.anime-background) {
 }
 
 body:has(.anime-background) .container[role="main"] {
-  background: color-mix(in srgb, var(--global-bg-color) 48%, transparent);
+  background: color-mix(in srgb, var(--global-bg-color) 28%, transparent);
   border: 1px solid var(--global-divider-color);
   border-radius: 0.65rem;
   box-shadow: 0 18px 55px rgba(5, 18, 29, 0.16);
@@ -185,7 +185,7 @@ h3 {
   }
 
   body:has(.anime-background) .container[role="main"] {
-    background: color-mix(in srgb, var(--global-bg-color) 58%, transparent);
+    background: color-mix(in srgb, var(--global-bg-color) 28%, transparent);
     border-left: 0;
     border-radius: 0;
     border-right: 0;
