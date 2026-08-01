@@ -6,7 +6,7 @@ subtitle: Generative AI Researcher · Ph.D. Student at HKUST(GZ)
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: shitong-shao-portrait.jpg
   image_circular: false
   more_info: >
     <p>Hong Kong University of Science and Technology (Guangzhou)</p>

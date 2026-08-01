@@ -2,7 +2,7 @@
 layout: page
 permalink: /zh/publications/
 title: 论文
-description: 邵士通的完整论文列表。
+description: 邵世通的完整论文列表。
 nav: false
 ---
 

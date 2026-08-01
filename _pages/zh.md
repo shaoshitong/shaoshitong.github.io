@@ -8,7 +8,7 @@ subtitle: 生成式人工智能研究者 · 香港科技大学（广州）博士
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: shitong-shao-portrait.jpg
   image_circular: false
   more_info: >
     <p>香港科技大学（广州）</p>
@@ -22,7 +22,7 @@ latest_posts:
   enabled: false
 ---
 
-我是**邵士通（Sutton）**，香港科技大学（广州）数据科学与分析学域博士生，导师为 Zeke Xie 教授。我的研究聚焦高效生成建模，主要关注视频扩散模型、模型蒸馏、高效采样与可落地的生成系统。
+我是**邵世通（Sutton）**，香港科技大学（广州）数据科学与分析学域博士生，导师为 Zeke Xie 教授。我的研究聚焦高效生成建模，主要关注视频扩散模型、模型蒸馏、高效采样与可落地的生成系统。
 
 我的工作覆盖从方法设计到产业部署的完整链路。近期研究与工程成果已应用于 **First-Intelligence** 和 **Hedra** 的真实视频生成产品，包括 HYVideo-1.5 与 Character-C3。
 
