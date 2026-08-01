@@ -8,7 +8,7 @@ subtitle: 生成式人工智能研究者 · 香港科技大学（广州）博士
 
 profile:
   align: right
-  image: shitong-shao-portrait.jpg
+  image: shitong-shao-anime.png
   image_circular: false
   more_info: >
     <p>香港科技大学（广州）</p>
@@ -54,6 +54,10 @@ latest_posts:
 <p class="section-more"><a href="{{ '/zh/publications/' | relative_url }}">查看全部 56 篇论文 →</a></p>
 
 ## 研究与产业经历 {#experience}
+
+**研究实习生 · 字节跳动 Seed**<br>
+_2026 年 4 月 22 日至今_<br>
+研究方向：面向高效生成建模的 GAN 蒸馏。
 
 **研究科学家实习生 · First-Intelligence**<br>
 _2025 年 10 月至今_<br>

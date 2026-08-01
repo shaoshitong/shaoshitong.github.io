@@ -6,7 +6,7 @@ subtitle: Generative AI Researcher · Ph.D. Student at HKUST(GZ)
 
 profile:
   align: right
-  image: shitong-shao-portrait.jpg
+  image: shitong-shao-anime.png
   image_circular: false
   more_info: >
     <p>Hong Kong University of Science and Technology (Guangzhou)</p>
@@ -56,6 +56,10 @@ I turn research ideas into deployable video-generation systems, with experience 
 <p class="section-more"><a href="{{ '/publications/' | relative_url }}">View all 56 publications →</a></p>
 
 ## Experience {#experience}
+
+**Research Intern · ByteDance Seed**<br>
+_Apr. 22, 2026 – Present_<br>
+Research on GAN distillation for efficient generative modeling.
 
 **Research Scientist Intern · First-Intelligence**<br>
 _Oct. 2025 – Present_<br>
