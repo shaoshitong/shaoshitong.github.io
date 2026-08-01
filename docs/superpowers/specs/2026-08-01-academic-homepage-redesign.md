@@ -55,7 +55,7 @@ The visual foundation is al-folio's native responsive grid, typography scale, pu
 - CV
 - English / 中文 language switcher
 
-The navigation collapses to al-folio's existing mobile menu. The language switch should map corresponding pages rather than returning users to the homepage.
+About, Research, and Experience link to sections on the language-specific homepage. Publications and CV are separate routes or assets. The navigation collapses to al-folio's existing mobile menu. The language switch should map corresponding pages rather than returning users to the homepage.
 
 ### Homepage
 
@@ -83,7 +83,7 @@ The provided `xLeaF_Lab_CV_Template_Shitong.pdf` is stored as a downloadable sta
 
 ## Bilingual Content Model
 
-English is the default language. English and Chinese use separate content pages while sharing layouts, components, bibliography data, design tokens, and assets.
+English is the default language at root routes. Chinese pages live under the `/zh/` prefix. English and Chinese use separate content pages while sharing layouts, components, bibliography data, design tokens, and assets.
 
 Each translatable route has an explicit counterpart recorded in front matter. The switcher links to that counterpart, so `/publications/` maps to its Chinese equivalent rather than to the site root. Names, paper titles, venues, author lists, URLs, and BibTeX stay canonical and are not translated. Research summaries, navigation, section headings, news prose, and experience descriptions are localized.
 
