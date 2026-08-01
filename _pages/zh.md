@@ -31,7 +31,7 @@ latest_posts:
 
 我是**邵世通（Sutton）**，香港科技大学（广州）数据科学与分析学域博士生，导师为 Zeke Xie 教授。我的研究聚焦高效生成建模，主要关注视频扩散模型、模型蒸馏、高效采样与可落地的生成系统。
 
-我的工作覆盖从方法设计到产业部署的完整链路。近期研究与工程成果已应用于 **First-Intelligence** 和 **Hedra** 的真实视频生成产品，包括 HYVideo-1.5 与 Character-C3。
+我的研究覆盖从方法设计到实际部署的完整链路。我曾在 **First-Intelligence** 和 **Hedra** 参与 HYVideo-1.5、Character-C3 等视频生成系统，目前在**字节跳动 Seed** 实习，研究面向图像生成模型的 GAN 架构设计与蒸馏。
 
 <div class="research-metric" aria-label="Google Scholar 引用次数">
   <span class="research-metric__value">{{ site.citation_count }}</span>

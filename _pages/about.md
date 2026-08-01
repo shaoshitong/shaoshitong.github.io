@@ -33,7 +33,7 @@ latest_posts:
 
 I am **Shitong Shao (Sutton)**, a Ph.D. student in Data Science and Analytics at **HKUST(GZ)**, advised by Prof. Zeke Xie. My research focuses on efficient generative modeling, with an emphasis on video diffusion, model distillation, efficient sampling, and production-ready generation systems.
 
-My work spans the full path from method design to deployment. Recent systems and techniques have contributed to real-world video-generation products at **First-Intelligence** and **Hedra**, including HYVideo-1.5 and Character-C3.
+My work spans the full path from method design to deployment. At **First-Intelligence** and **Hedra**, I contributed to real-world video-generation products, including HYVideo-1.5 and Character-C3. I am currently a Research Intern at **ByteDance Seed**, where I work on GAN design and distillation for image generation models.
 
 <div class="research-metric" aria-label="Google Scholar citations">
   <span class="research-metric__value">{{ site.citation_count }}</span>
