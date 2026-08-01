@@ -6,7 +6,7 @@ subtitle: Generative AI Researcher · Ph.D. Student at HKUST(GZ)
 
 profile:
   align: right
-  image: shitong-shao-anime.png
+  image: shitong-shao-profile.png
   image_circular: false
   more_info: >
     <p>Hong Kong University of Science and Technology (Guangzhou)</p>
@@ -84,3 +84,7 @@ Worked on large-scale dataset condensation and optimization, resulting in G-VBSM
 Earlier roles at OPPO, Shanghai AI Laboratory, Beijing Institute of Technology, and Yiliu Technology covered dataset condensation, AI compilers, knowledge distillation, and model engineering.
 
 <p class="section-more"><a href="{{ '/assets/pdf/Shitong_Shao_CV.pdf' | relative_url }}">Read the full CV →</a></p>
+
+## Personal interests {#interests}
+
+Beyond research, I have a long-standing interest in traditional Chinese metaphysics and practice **Liuyao divination, Qimen Dunjia, Meihua Yishu, and Four Pillars of Destiny (Bazi)**. My readings have been accurate roughly nine times out of ten—friends who are interested are welcome to reach out for a reading.

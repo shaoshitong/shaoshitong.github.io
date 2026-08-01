@@ -8,7 +8,7 @@ subtitle: 生成式人工智能研究者 · 香港科技大学（广州）博士
 
 profile:
   align: right
-  image: shitong-shao-anime.png
+  image: shitong-shao-profile.png
   image_circular: false
   more_info: >
     <p>香港科技大学（广州）</p>
@@ -82,3 +82,7 @@ _2023 年 7 月 – 2024 年 3 月_<br>
 曾在 OPPO、上海人工智能实验室、北京理工大学与一流科技参与数据浓缩、AI 编译器、知识蒸馏与模型工程研究。
 
 <p class="section-more"><a href="{{ '/assets/pdf/Shitong_Shao_CV.pdf' | relative_url }}">查看完整简历 →</a></p>
+
+## 兴趣 {#interests}
+
+研究之外，我也略懂易学，会**六爻、奇门遁甲、梅花易数与四柱八字**等。自认为十算九准，有需要的朋友欢迎找我起卦。
