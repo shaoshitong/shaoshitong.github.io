@@ -20,18 +20,10 @@ html[data-theme="dark"] {
 
 body {
   font-family:
-    Inter,
-    ui-sans-serif,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "PingFang SC",
-    "Hiragino Sans GB",
-    "Microsoft YaHei",
-    sans-serif;
-  font-size: 1.02rem;
-  line-height: 1.72;
-  letter-spacing: -0.005em;
+    "Times New Roman", "Noto Serif CJK SC", "Songti SC", SimSun, serif;
+  font-size: 1rem;
+  line-height: 1.68;
+  letter-spacing: 0;
 }
 
 .post-header {
@@ -81,7 +73,9 @@ body:has(.anime-background) .container[role="main"] {
 }
 
 .post-title {
-  letter-spacing: -0.035em;
+  font-size: 2.15rem;
+  letter-spacing: -0.018em;
+  line-height: 1.18;
 }
 
 .profile img {
@@ -98,13 +92,32 @@ body:has(.anime-background) .container[role="main"] {
 
 h2 {
   border-bottom: 1px solid var(--global-divider-color);
+  font-size: 1.55rem;
   margin-top: 3.25rem;
   padding-bottom: 0.45rem;
 }
 
 h3 {
-  font-size: 1.12rem;
+  font-size: 1.08rem;
   margin-top: 1.6rem;
+}
+
+.publications ol.bibliography li .title {
+  font-family:
+    "Times New Roman", "Noto Serif CJK SC", "Songti SC", SimSun, serif;
+  font-size: 1.03rem;
+  font-weight: 600;
+  line-height: 1.38;
+}
+
+.publications ol.bibliography li .author,
+.publications ol.bibliography li .periodical,
+.publications ol.bibliography li .links,
+.publications ol.bibliography li .abstract,
+.publications ol.bibliography li .award,
+.publications ol.bibliography li .additional-info {
+  font-size: 0.93rem;
+  line-height: 1.5;
 }
 
 .research-metric {
@@ -152,8 +165,8 @@ h3 {
 
 @media (max-width: 575px) {
   body {
-    font-size: 0.98rem;
-    line-height: 1.68;
+    font-size: 0.96rem;
+    line-height: 1.64;
   }
 
   .profile {
@@ -169,7 +182,12 @@ h3 {
   }
 
   h2 {
+    font-size: 1.4rem;
     margin-top: 2.6rem;
+  }
+
+  .post-title {
+    font-size: 1.8rem;
   }
 
   .research-metric {
