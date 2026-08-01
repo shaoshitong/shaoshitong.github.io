@@ -13,8 +13,9 @@ Make the anime video background visibly contribute to the homepage aesthetic whi
 
 - Change the homepage content container from approximately 91% opaque to 65% opaque on desktop.
 - Preserve the existing dark surface color, border, rounded corners, and shadow.
-- Add a subtle backdrop blur and restrained text shadow where needed so text remains legible over changing video frames.
-- Use a slightly more opaque surface on narrow mobile screens because the content column covers more of the video and the text wraps more frequently.
+- Apply a `3px` backdrop blur to soften moving detail beneath the content without hiding the animation.
+- In dark mode, apply a restrained `0 1px 2px rgba(0, 0, 0, 0.35)` text shadow to homepage prose and headings. Do not apply a text shadow in light mode.
+- Use a 74% opaque surface below the existing `575px` breakpoint because the content column covers more of the video and text wraps more frequently.
 - Keep the existing reduced-motion poster fallback.
 
 ## English Copy
@@ -35,3 +36,4 @@ Use the corresponding natural Chinese wording:
 - Confirm both homepages contain the new Seed wording.
 - Confirm the deployed CSS contains the new desktop and mobile surface opacity values.
 - Check that the video background and reduced-motion fallback remain intact.
+- Visually inspect the homepage at a representative desktop width of `1440px` and mobile width of `390px`, pausing on both relatively bright and dark video frames. Headings, body copy, links, and publication metadata must remain comfortably readable without visible blending into the background.
