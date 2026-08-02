@@ -23,7 +23,7 @@ latest_posts:
 ---
 
 <div class="anime-background" aria-hidden="true">
-  <video autoplay muted loop playsinline preload="auto" poster="{{ '/assets/img/shitong-shao-anime.png' | relative_url }}">
+  <video autoplay muted loop playsinline preload="auto">
     <source src="{{ '/assets/video/anime-background.mp4' | relative_url }}" type="video/mp4">
   </video>
   <div class="anime-background__overlay"></div>
