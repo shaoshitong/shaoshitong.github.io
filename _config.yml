@@ -2,18 +2,18 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: Shitong Shao
+title: 邵世通 | Shitong Shao (Sutton)
 first_name: Shitong
 middle_name: ""
 last_name: Shao
 contact_note: >
   Research conversations and collaborations are welcome.
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Shitong Shao is a Ph.D. student at HKUST(GZ) working on efficient generative modeling, video diffusion, and model distillation.
+  邵世通（Shitong Shao，Sutton）是香港科技大学（广州）博士生，研究方向包括高效生成建模、视频扩散模型、图像生成、GAN 与模型蒸馏。Shitong Shao is a Ph.D. student at HKUST(GZ) working on efficient generative modeling, video diffusion, image generation, GANs, and model distillation.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
-keywords: Shitong Shao, generative AI, video diffusion, model distillation, efficient generative modeling
+keywords: 邵世通, Shitong Shao, Sutton, 香港科技大学广州, HKUST(GZ), 生成式人工智能, 高效生成建模, 视频扩散模型, 图像生成, GAN, 模型蒸馏, generative AI, video diffusion, image generation, model distillation, efficient generative modeling
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 citation_count: "1K+"
 icon: SS
