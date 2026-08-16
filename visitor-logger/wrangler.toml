@@ -1,0 +1,16 @@
+name = "shaoshitong-visitor-logger"
+main = "src/index.js"
+compatibility_date = "2026-08-16"
+
+[vars]
+ALLOWED_ORIGIN = "https://shaoshitong.github.io"
+RETENTION_DAYS = "30"
+STORE_FULL_IP = "false"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "shaoshitong-visits"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[triggers]
+crons = ["17 3 * * *"]

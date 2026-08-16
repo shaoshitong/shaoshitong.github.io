@@ -13,6 +13,7 @@ description: > # the ">" symbol means to ignore newlines until "footer_text:"
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
+  <a href="/privacy/">Privacy</a>.
 keywords: 邵世通, Shitong Shao, Sutton, 香港科技大学广州, HKUST(GZ), 生成式人工智能, 高效生成建模, 视频扩散模型, 图像生成, GAN, 模型蒸馏, generative AI, video diffusion, image generation, model distillation, efficient generative modeling
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 citation_count: "1K+"
@@ -116,6 +117,11 @@ analytics:
   openpanel: # your Openpanel analytics client ID (format: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX)
   cloudflare: # your Cloudflare Web Analytics beacon token (32 hex characters)
 enable_simple_analytics: false # Simple Analytics identifies a site by its domain, so it has no ID to set above
+
+# Self-hosted visit logging (Cloudflare Worker + D1).
+# Leave endpoint empty until the Worker in `visitor-logger/` has been deployed.
+visitor_logging:
+  endpoint:
 
 # For Google Search Console, see https://support.google.com/webmasters/answer/9008080?hl=en#meta_tag_verification&zippy=%2Chtml-tag
 google_site_verification: # your google-site-verification ID (Google Search Console)
