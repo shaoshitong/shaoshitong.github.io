@@ -121,7 +121,7 @@ enable_simple_analytics: false # Simple Analytics identifies a site by its domai
 # Self-hosted visit logging (Cloudflare Worker + D1).
 # Leave endpoint empty until the Worker in `visitor-logger/` has been deployed.
 visitor_logging:
-  endpoint:
+  endpoint: https://shaoshitong-visitor-logger.1090784053.workers.dev/collect
 
 # For Google Search Console, see https://support.google.com/webmasters/answer/9008080?hl=en#meta_tag_verification&zippy=%2Chtml-tag
 google_site_verification: # your google-site-verification ID (Google Search Console)

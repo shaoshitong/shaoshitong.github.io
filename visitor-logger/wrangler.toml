@@ -10,7 +10,7 @@ STORE_FULL_IP = "false"
 [[d1_databases]]
 binding = "DB"
 database_name = "shaoshitong-visits"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "0fdc617c-f099-493c-a22b-30bad06947cb"
 
 [triggers]
 crons = ["17 3 * * *"]
