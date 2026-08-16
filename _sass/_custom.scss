@@ -38,7 +38,7 @@ body:has(.anime-background) .container[role="main"] {
   background: color-mix(in srgb, var(--global-bg-color) 28%, transparent);
   border: 1px solid var(--global-divider-color);
   border-radius: 0.65rem;
-  box-shadow: 0 18px 55px rgba(5, 18, 29, 0.16);
+  box-shadow: 0 14px 40px rgba(5, 18, 29, 0.1);
   margin-bottom: 5.5rem;
   margin-top: 5.5rem !important;
   padding: 2.5rem 3rem;
@@ -46,7 +46,7 @@ body:has(.anime-background) .container[role="main"] {
 }
 
 html[data-theme="dark"] body:has(.anime-background) .container[role="main"] {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 
 .anime-background {
@@ -60,10 +60,11 @@ html[data-theme="dark"] body:has(.anime-background) .container[role="main"] {
 
 .anime-background video {
   height: 100vw;
+  filter: brightness(1.16) saturate(1.04);
   left: 50%;
   max-width: none;
   object-fit: cover;
-  opacity: 0.88;
+  opacity: 0.96;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%) rotate(-90deg);
@@ -73,10 +74,10 @@ html[data-theme="dark"] body:has(.anime-background) .container[role="main"] {
 
 .anime-background__overlay {
   background:
-    linear-gradient(180deg, rgba(5, 15, 26, 0.48), rgba(5, 15, 26, 0.72)),
+    linear-gradient(180deg, rgba(5, 15, 26, 0.22), rgba(5, 15, 26, 0.42)),
     radial-gradient(
       circle at 68% 22%,
-      rgba(15, 118, 110, 0.12),
+      rgba(15, 118, 110, 0.08),
       transparent 48%
     );
   inset: 0;

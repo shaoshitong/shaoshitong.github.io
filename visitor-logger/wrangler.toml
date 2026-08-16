@@ -5,7 +5,7 @@ compatibility_date = "2026-08-16"
 [vars]
 ALLOWED_ORIGIN = "https://shaoshitong.github.io"
 RETENTION_DAYS = "30"
-STORE_FULL_IP = "false"
+STORE_FULL_IP = "true"
 
 [[d1_databases]]
 binding = "DB"
