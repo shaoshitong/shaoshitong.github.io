@@ -60,11 +60,11 @@ html[data-theme="dark"] body:has(.anime-background) .container[role="main"] {
 
 .anime-background video {
   height: 100vw;
-  filter: brightness(1.16) saturate(1.04);
+  filter: brightness(1.42) saturate(1.08);
   left: 50%;
   max-width: none;
   object-fit: cover;
-  opacity: 0.96;
+  opacity: 1;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%) rotate(-90deg);
@@ -74,10 +74,10 @@ html[data-theme="dark"] body:has(.anime-background) .container[role="main"] {
 
 .anime-background__overlay {
   background:
-    linear-gradient(180deg, rgba(5, 15, 26, 0.22), rgba(5, 15, 26, 0.42)),
+    linear-gradient(180deg, rgba(5, 15, 26, 0.08), rgba(5, 15, 26, 0.2)),
     radial-gradient(
       circle at 68% 22%,
-      rgba(15, 118, 110, 0.08),
+      rgba(15, 118, 110, 0.04),
       transparent 48%
     );
   inset: 0;
