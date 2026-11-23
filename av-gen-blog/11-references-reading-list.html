@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11 延伸阅读：论文、GitHub.io、博客与知乎精选 — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.11</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="index.html">🏠 返回总览</a>
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-cyan">Chapter 11 · 精选书单</span>
+          <span class="tag tag-violet">arXiv 论文 &amp; GitHub.io</span>
+          <span class="tag tag-amber">技术博客与知乎导航</span>
+        </div>
+
+        <h1>延伸阅读与精选资源库：论文、GitHub.io、开源仓库与知乎深潜指南</h1>
+        <p class="lead">
+          音视频生成领域几乎每周都有重磅开源和论文刷屏。这一章按本指南的专题脉络，把最值得精读的<strong>奠基论文、官方 github.io 演示页、开源代码仓、经典英文博客以及知乎高质量检索方向</strong>全部整理在一处，方便你随时按图索骥继续深挖！
+        </p>
+
+        <h2 id="official-demos">一、必看官方 Demo 页（GitHub.io）与开源大模型仓库</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>项目名称</th>
+                <th>核心亮点（对应本指南章节）</th>
+                <th>直达链接</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ovi (Twin Backbone AV)</strong></td>
+                <td>开源原生音画一体扩散模型，双流对称交叉注意力，含大量 T2AV/TI2AV 真实有声 Demo（Ch.05 / Ch.10）</td>
+                <td><a href="https://aaxwaz.github.io/Ovi/" target="_blank" rel="noopener">aaxwaz.github.io/Ovi</a> · <a href="https://github.com/Ovi-Video/Ovi" target="_blank" rel="noopener">GitHub</a></td>
+              </tr>
+              <tr>
+                <td><strong>Wan 2.1 / Wan 2.2 (Alibaba)</strong></td>
+                <td>视频扩散 <strong>MoE 架构</strong>标杆（高噪/低噪双专家 27B-A14B），Apache 2.0 开源生态最繁荣（Ch.05 / Ch.06）</td>
+                <td><a href="https://github.com/Wan-AI/Wan2.2" target="_blank" rel="noopener">GitHub: Wan-AI/Wan2.2</a> · <a href="https://huggingface.co/Wan-AI/Wan2.2-T2V-A14B" target="_blank" rel="noopener">HuggingFace</a></td>
+              </tr>
+              <tr>
+                <td><strong>HunyuanVideo (Tencent)</strong></td>
+                <td>13B+ 开源视频基座，MLLM 文本编码器、Prompt Rewrite、完整工业级数据清洗与训练报告（Ch.01 / Ch.03 / Ch.05）</td>
+                <td><a href="https://github.com/Tencent-Hunyuan/HunyuanVideo" target="_blank" rel="noopener">GitHub: HunyuanVideo</a></td>
+              </tr>
+              <tr>
+                <td><strong>LTX-Video / LTX-2.5</strong></td>
+                <td>高压缩 3D-VAE、实时级联生成与单次原生音画一体双流 Transformer（Ch.05 / Ch.07）</td>
+                <td><a href="https://github.com/Lightricks/LTX-Video" target="_blank" rel="noopener">GitHub: LTX-Video</a></td>
+              </tr>
+              <tr>
+                <td><strong>CogVideoX (THUDM)</strong></td>
+                <td>3D Expert Adaptive LayerNorm、长文本密集视频重标注范式先驱（Ch.04 / Ch.05）</td>
+                <td><a href="https://github.com/THUDM/CogVideo" target="_blank" rel="noopener">GitHub: THUDM/CogVideo</a></td>
+              </tr>
+              <tr>
+                <td><strong>Google Veo 3 / DeepMind</strong></td>
+                <td>商业级原生音画一体、真实物理模拟与电影语言控制的行业风向标（Ch.00 / Ch.05）</td>
+                <td><a href="https://deepmind.google/technologies/veo/" target="_blank" rel="noopener">DeepMind Veo Official</a></td>
+              </tr>
+              <tr>
+                <td><strong>Meta MovieGen</strong></td>
+                <td>史上最坦诚的工业界技术报告之一：详述数据过滤、图文混训、30B 架构、视频超分与音频生成（Ch.01–Ch.07）</td>
+                <td><a href="https://ai.meta.com/research/movie-gen/" target="_blank" rel="noopener">Meta MovieGen</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="papers-by-topic">二、按专题分类的必读核心论文（arXiv 精选）</h2>
+
+        <div class="card-grid-2">
+          <div class="info-card">
+            <h4>📦 数据、PE 与 Dense Caption（Ch.01–Ch.04）</h4>
+            <ul>
+              <li><strong>Perception Encoder (Meta, 2025)</strong>：<a href="https://arxiv.org/abs/2504.13181" target="_blank" rel="noopener">arXiv:2504.13181</a> — 揭示视觉/音视频编码器最强特征在中间层。</li>
+              <li><strong>REPA (ICLR 2025)</strong>：<a href="https://arxiv.org/abs/2410.06940" target="_blank" rel="noopener">Representation Alignment for Generation</a> — 用视觉编码器特征对齐加速 DiT 训练数倍。</li>
+              <li><strong>Koala-36M (2024)</strong>：<a href="https://arxiv.org/abs/2410.08260" target="_blank" rel="noopener">Improving Video Generation with More Accurate Video Captions</a> — 精细视频数据集与清洗标杆。</li>
+              <li><strong>CameraCtrl (2024)</strong>：<a href="https://arxiv.org/abs/2404.02101" target="_blank" rel="noopener">Enabling Camera Control for Text-to-Video Generation</a> — Plücker Ray 精准运镜控制。</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>🏗️ 架构、Flow Matching 与 MoE（Ch.05）</h4>
+            <ul>
+              <li><strong>DiT (ICCV 2023)</strong>：<a href="https://arxiv.org/abs/2212.09748" target="_blank" rel="noopener">Scalable Diffusion Models with Transformers</a> — 现代视频生成的架构原点。</li>
+              <li><strong>SD3 / MMDiT (2024)</strong>：<a href="https://arxiv.org/abs/2403.03206" target="_blank" rel="noopener">Scaling Rectified Flow Transformers</a> — Rectified Flow + 多模态双流注意力。</li>
+              <li><strong>Wan 2.1 / 2.2 Report (2025)</strong>：<a href="https://arxiv.org/abs/2503.20314" target="_blank" rel="noopener">Wan: Open and Advanced Large-Scale Video Generative Models</a> — 工业级架构与 MoE 演进必读。</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>🔥 RL 后训练与极速蒸馏（Ch.06）</h4>
+            <ul>
+              <li><strong>Flow-GRPO (2025)</strong>：<a href="https://arxiv.org/abs/2505.05470" target="_blank" rel="noopener">Training Flow Matching Models via Online RL</a> — ODE→SDE + GRPO 在线强化学习范式。</li>
+              <li><strong>DanceGRPO (2025)</strong>：<a href="https://arxiv.org/abs/2505.07818" target="_blank" rel="noopener">Unleashing GRPO on Visual Generation</a> — 统一图文/视频生成的稳定 GRPO 框架。</li>
+              <li><strong>DMD2 (NeurIPS 2024)</strong>：<a href="https://arxiv.org/abs/2405.14867" target="_blank" rel="noopener">Improved Distribution Matching Distillation</a> — 4 步高质量视频蒸馏核心基石。</li>
+              <li><strong>MeanFlow (2025)</strong>：<a href="https://arxiv.org/abs/2505.13447" target="_blank" rel="noopener">Mean Flows for One-step Generative Modeling</a> — 平均速度场一步生成新范式。</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>⚡ 级联超分、推理加速与智能体（Ch.07–Ch.09）</h4>
+            <ul>
+              <li><strong>SeedVR / SeedVR2 (2025)</strong>：<a href="https://arxiv.org/abs/2501.01320" target="_blank" rel="noopener">Diffusion Transformer for Video Restoration</a> — 一步扩散视频超分精修标杆。</li>
+              <li><strong>SageAttention2 (ICML 2025)</strong>：<a href="https://arxiv.org/abs/2411.10958" target="_blank" rel="noopener">Efficient Attention with Thorough Outlier Smoothing &amp; INT4</a> — 免费 2–3× 注意力加速。</li>
+              <li><strong>TeaCache (CVPR 2025)</strong>：<a href="https://arxiv.org/abs/2411.19108" target="_blank" rel="noopener">Timestep Embedding Tells: It's Time to Cache</a> — 免训练特征缓存加速。</li>
+              <li><strong>SVDQuant (ICLR 2025)</strong>：<a href="https://arxiv.org/abs/2411.05007" target="_blank" rel="noopener">Absorbing Outliers by Low-Rank Components for 4-Bit Diffusion</a> — 4-bit 无损量化神作。</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2 id="blogs-and-zhihu">三、优质中文/英文博客与知乎深度专栏阅读建议</h2>
+        <p>
+          看原始论文容易陷入符号海洋，强烈建议配合下面这些「说人话」的顶级技术博客与社区专栏一起看：
+        </p>
+
+        <div class="card-grid">
+          <div class="info-card">
+            <h4>🌐 英文硬核博客</h4>
+            <ul>
+              <li><a href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/" target="_blank" rel="noopener">Lil'Log — What are Diffusion Models?</a>（Lilian Weng 经典扫盲，从 DDPM 到引导采样）</li>
+              <li><a href="https://huggingface.co/blog" target="_blank" rel="noopener">Hugging Face Diffusers Blog</a>（Wan / LTX / HunyuanVideo / FP8 / SageAttn 第一手实操调优指南）</li>
+              <li><a href="https://openai.com/index/video-generation-models-as-world-simulators/" target="_blank" rel="noopener">OpenAI — Video generation models as world simulators</a>（Sora 奠基博客，必读！）</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>🇨🇳 知乎高赞深度方向</h4>
+            <p>在知乎直接搜索以下高信噪比关键词/专栏主题，能找到大量一线大厂算法工程师的踩坑实录：</p>
+            <ul>
+              <li><strong>苏剑林（科学空间）</strong>：「生成扩散模型漫谈」系列（Flow Matching / ODE / SDE 数学直觉全网第一）</li>
+              <li>知乎热议专题：<code>「Wan 2.2 MoE 架构解读」</code>、<code>「Flow-GRPO / DanceGRPO 视频强化学习」</code></li>
+              <li>知乎工程专题：<code>「视频生成 3D-VAE 与数据清洗踩坑」</code>、<code>「DMD2 / MeanFlow 步数蒸馏实战」</code></li>
+              <li>知乎应用专题：<code>「ComfyUI Qwen-Image + MiniMax H3 智能体分镜工作流」</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout tldr">
+          <div class="callout-title">🎓 给不同背景读者的「极速通关路线」</div>
+          <ul>
+            <li><strong>如果你是算法工程师 / 炼丹师</strong>：精读 <code>Ch.02 → Ch.03 → Ch.05 → Ch.06</code>，重点吃透图文混训防偏置、REPA/PE、MoE 专家划分、Flow-GRPO 与 DMD2 蒸馏。</li>
+            <li><strong>如果你是推理 / Infra 工程师</strong>：直奔 <code>Ch.05 → Ch.07 → Ch.08</code>，吃透 3D-VAE 显存瓶颈、级联超分算力账本、FP8/NVFP4、SageAttention2、TeaCache 与 Ulysses 并行。</li>
+            <li><strong>如果你是 AI 导演 / 产品经理 / 创作者</strong>：重点看 <code>Ch.00 → Ch.03 (PE) → Ch.04 (好 Caption 六维标准) → Ch.09 (LLM→Qwen-Image→MMX-H3) → Ch.10 (实验室)</code>！</li>
+          </ul>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>恭喜你读完全站 12 章！欢迎随时通过左侧搜索框回顾任意核心概念。</span>
+          <span><a href="index.html">↺ 回到第 00 章总览</a></span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

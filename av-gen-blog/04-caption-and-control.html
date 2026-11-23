@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 什么是 Caption？如何精确控制视频？ — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.04</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-cyan">Chapter 04 · 标注与可控性</span>
+          <span class="tag tag-emerald">Dense Captioning</span>
+          <span class="tag tag-violet">精确控制方法论</span>
+        </div>
+
+        <h1>什么是 Caption？如何精确控制视频？什么样的 Caption 才是好的？</h1>
+        <p class="lead">
+          OpenAI 在 DALL·E 3 和 Sora 技术报告里揭示了一条价值十亿美元的行业秘密：<strong>决定生成模型到底「听不听话」的第一杠杆，不是魔改 Attention，而是 Caption（数据标注文本）的质量！</strong> 这一章我们彻底把三个核心问题讲透：Caption 到底在教模型什么？什么标准才算顶级的音视频 Caption？除了写文字，工业界还有哪些精确控制视频的「硬手段」？
+        </p>
+
+        <h2 id="what-is-caption">一、说人话：什么是 Caption？为什么「短标签」会让模型变聋？</h2>
+        <p>
+          <strong>Caption（视频/音视频描述文本）</strong>，就是训练阶段配在每一段视频旁边的「文字说明书」。
+        </p>
+        <p>
+          想象一下，你给一个学画画的孩子看 1000 段完全不同的猫视频——有的猫在沙发上睡觉、有的猫在雪地里打滚、有的镜头从头顶俯拍、有的慢镜头特写猫爪——但你在每段视频下面只写了一句懒人标签：<code>"a cat"</code>。
+        </p>
+        <p>
+          结果会发生什么？<strong>模型会彻底学会「忽略控制」</strong>！因为无论视频里是晴天还是雨天、俯拍还是跟拍、喵喵叫还是呼噜声，标签全都是 <code>"a cat"</code>，模型被迫把所有变化都塞进随机噪声里去「抽盲盒」。等你推理时想精确控制「镜头左移、逆光特写、猫轻轻叫了一声」，模型根本听不懂，因为它训练时压根没建立起「这些词 ↔ 对应画面/声音变化」的因果映射！
+        </p>
+
+        <div class="callout tip">
+          <div class="callout-title">🧠 Caption 的第一性原理</div>
+          <p>
+            <strong>「你在 Caption 里写清楚了什么，模型就只能听懂什么；你在 Caption 里漏掉了什么，模型就永远只能靠随机噪声瞎蒙。」</strong><br>
+            这就是为什么现代视频大模型（Sora、MovieGen、HunyuanVideo、Wan、Veo 3）全部抛弃了原始网页标题，花巨资用专门微调的多模态大模型把全库视频重新写了一遍 <strong>Dense Caption（密集详尽标注）</strong>。
+          </p>
+        </div>
+
+        <h2 id="six-dimensions">二、什么样的 Caption 才是「好的 Caption」？—— 六维黄金标准</h2>
+        <p>
+          并不是字数越长越好！流水账、文艺抒情、或者 VLM 瞎编的幻觉词，反而会毒害模型。工业界公认的顶级音视频 Dense Caption 必须同时满足下面这<strong>六个维度（6D Standard）</strong>：
+        </p>
+
+        <div class="card-grid">
+          <div class="info-card">
+            <h4>1. 主体与外观锚定（Subject &amp; Visual Anchor）</h4>
+            <p>精准描述核心人物/物体的数量、性别/年龄、衣着材质、颜色、显著特征及初始空间位置（如「画面左侧穿着深棕色皮夹克、留着橘红色齐肩发的年轻女性」）。</p>
+          </div>
+          <div class="info-card">
+            <h4>2. 动作与时间先后（Temporal Action Sequence）</h4>
+            <p>视频是时间的艺术！必须用明确的时序连接词（起初 → 随后 → 紧接着 → 最后）写清动作的起承转合、幅度快慢与因果关系，绝不能只写静态画面。</p>
+          </div>
+          <div class="info-card">
+            <h4>3. 镜头语言与运镜（Camera &amp; Framing）</h4>
+            <p>景别（特写 Close-up / 中景 Medium / 全景 Wide）、机位角度（低机位仰拍 / 俯拍 / 过肩）、运镜方式（固定机位 Static / 推轨 Push-in / 左摇 Pan Left / 环绕 Orbit / 手持微晃）。</p>
+          </div>
+          <div class="info-card">
+            <h4>4. 场景、光影与视觉风格（Lighting &amp; Style）</h4>
+            <p>环境背景、天气时段、光源方向（暖色逆光、霓虹侧光、柔光箱）、景深虚化、色彩基调以及画风（写实电影胶片 / 3D 动画 / 赛博朋克 / 纪录片手持）。</p>
+          </div>
+          <div class="info-card">
+            <h4>5. 物理互动与微细节（Physics &amp; Micro-dynamics）</h4>
+            <p>风吹动头发的方向、雨水打在玻璃上的滑落、倒影、烟雾弥散、布料褶皱与重力反馈——这些细节是把「AI 塑料味」变成「真实世界模拟器」的关键。</p>
+          </div>
+          <div class="info-card">
+            <h4>6. 原生音频分层标注（Audio &amp; Dialogue Track）</h4>
+            <p>音视频一体模型的核心！必须把声音拆成三层写清楚：<strong>① 精确台词与说话人情绪/音色</strong>（带起止时机）、<strong>② 同步拟音 Foley</strong>（脚步声、碰撞声）、<strong>③ 环境底噪与背景音乐</strong>。</p>
+          </div>
+        </div>
+
+        <h3>好 Caption vs 坏 Caption：现场批改对比</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>反面教材（坏 Caption）</th>
+                <th>为什么会训废模型？</th>
+                <th>正面标杆（好 Caption）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>"一个女人看着镜头说话，画面非常唯美震撼，4K高清，杰作"</code></td>
+                <td>① 堆砌无意义画质词（4K/杰作），污染词表；② 没写外貌、衣服、景别、光影；③ 没写她说了什么话、什么语气、镜头动不动。</td>
+                <td><code>"特写镜头（Close-up），柔和自然侧光。一位留着鲜艳橘红色齐肩发、画着深色烟熏眼妆的年轻女性，身穿深棕色皮夹克与灰色连帽衫，直视镜头。起初她神情专注，随后微微偏头露出自信的微笑，开口用清晰冷静的女声说：&lt;S&gt;We need to leave before dawn.&lt;E&gt; 固定机位微浅景深，背景是虚化的室内暖光。环境音：安静的室内微弱底噪与衣料轻微摩擦声。"</code></td>
+              </tr>
+              <tr>
+                <td><code>"两只狗在公园草地上开心奔跑，感受着春天的温暖与自由"</code></td>
+                <td>① 「感受春天的温暖与自由」是不可见的心理幻觉，视觉模型无法映射到像素；② 没写狗的品种、毛色、奔跑方向和镜头跟随方式。</td>
+                <td><code>"中景右侧跟拍（Tracking right）。阳光明媚的草坪上，一只金毛寻回犬和一只黑白边牧从画面左侧向右侧全速追逐奔跑，草屑与泥点随四爪蹬地飞溅。草地受微风吹拂轻微起伏。音频：轻快的犬吠声、爪子踩踏草地的沙沙声与远处隐约的鸟鸣。"</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="video-card">
+          <div class="video-header">
+            <span class="video-title">🎬 真实案例验证：看 Dense Caption 如何驱动「音画+口型」精准输出</span>
+            <span class="tag tag-emerald">🔊 请开声音观看</span>
+          </div>
+          <div class="video-player-wrap">
+            <video controls playsinline preload="metadata" src="assets/videos/ovi-ti2av-4.mp4"></video>
+          </div>
+          <div class="video-meta">
+            <strong>实际 Prompt 节选（Ovi 官方 Demo <code>ti2av/4.mp4</code>）：</strong>
+            <em>"The video opens with a close-up of a woman with vibrant reddish-orange, shoulder-length hair and heavy dark eye makeup. She is wearing a dark brown leather jacket over a grey hooded top..."</em> — 注意看外貌锚定、微表情变化与同步人声是如何严丝合缝对齐的！
+          </div>
+        </div>
+
+        <h2 id="caption-pitfalls">三、大规模 Recaption 工程里的三大「隐形杀手」</h2>
+        <ol>
+          <li><strong>VLM 幻觉（Hallucination）</strong>：开源 VLM 经常「脑补」画面里根本没有的动作（比如画面里人只是站着，VLM 瞎写「他挥手致意并转身离开」）。解法是采用 <strong>多专家解耦标注流水线</strong>：视觉 VLM 负责主体/场景，专用运镜分类器/光流模型负责运镜标签，Whisper/ASR 负责精确对白转录，Audio Captioner（如 Qwen2-Audio）负责拟音与环境声，最后再由一个严格受约束的 LLM 融合成通顺段落并做一致性核验！</li>
+          <li><strong>格式单一导致过拟合</strong>：如果所有训练集 Caption 全都以 <code>"In this video, we can see..."</code> 开头，模型就会对固定句式过拟合。工业界都会做<strong>多粒度混合标注（短/中/长 + 结构化/自然语言混合）</strong>，并按一定概率（如 10%）随机 Drop 掉文本做 CFG（Classifier-Free Guidance）训练。</li>
+          <li><strong>中英文语义对齐</strong>：如果底座 Text Encoder 用了双语强的模型（如 Qwen-VL / umT5 / Qwen3），训练时混入一定比例高质量中文 Caption，能避免中文用户提示词经过翻译损失成语、古风、本土文化细节。</li>
+        </ol>
+
+        <h2 id="precise-control">四、只靠文字还不够：如何「精确控制」视频？</h2>
+        <p>
+          哪怕 Caption 写到 500 字，文字天生是「低带宽、离散的」——你很难只用文字精确规定「第 1.3 秒杯子向右平移 12 厘米，同时镜头绕桌旋转 35 度，且主角长相和上一场戏一模一样」。因此，现代音视频生成建立了一套<strong>五层递进的精确控制体系</strong>：
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>控制层级</th>
+                <th>核心技术方案</th>
+                <th>能精准控制什么？</th>
+                <th>典型代表模型 / 工作流</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>L1 文本与脚本控制</strong></td>
+                <td>Dense Caption + PE 改写 + 结构化时间轴/对白标记（如 <code>&lt;S&gt;...&lt;E&gt;</code>）</td>
+                <td>剧情走向、情绪氛围、对白内容、基础运镜与声音类型</td>
+                <td>Veo 3、Ovi、Sora 2、HunyuanVideo</td>
+              </tr>
+              <tr>
+                <td><strong>L2 首帧 / 尾帧 / 关键帧锚定</strong></td>
+                <td>I2V、First-Last Frame（首尾帧插值）、Keyframe Conditioning</td>
+                <td>精确锁定起止构图、光影、人物外观，保证镜头衔接丝滑</td>
+                <td>Wan 2.2 I2V、Kling、MMX-H3、LTX-2.5</td>
+              </tr>
+              <tr>
+                <td><strong>L3 多主体一致（Omni-Reference）</strong></td>
+                <td>多图参考注入（人+衣+景+道具拼接进 Context Token）</td>
+                <td>跨镜头保持同一主角脸型/服饰/场景绝对不崩（拍剧核心！）</td>
+                <td>MiniMax H3 (Omni-Ref)、Vidu Q1、Kling Multi-Ref、Phantom</td>
+              </tr>
+              <tr>
+                <td><strong>L4 空间与运镜几何控制</strong></td>
+                <td>CameraCtrl / Plücker Ray 相机外参、Motion Brush 运动轨迹、Depth/Pose/Canny ControlNet</td>
+                <td>像素级指定物体移动路线、精确 3D 相机轨迹、舞蹈骨骼动作</td>
+                <td>CameraCtrl、Tora、Wan-VACE、UniAnimate</td>
+              </tr>
+              <tr>
+                <td><strong>L5 音频与口型驱动</strong></td>
+                <td>Audio-to-Video / Speech-Driven Avatar（Wav2Vec/Whisper 特征注入交叉注意力）</td>
+                <td>给定一段真实配音或歌曲，驱动人物毫秒级对口型、表情与肢体韵律</td>
+                <td>OmniHuman、HunyuanVideo-Avatar、Sonic、HallO3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout tldr">
+          <div class="callout-title">🎯 实战心法：如何组合使用这些控制手段？</div>
+          <p>
+            不要指望靠写一篇 800 字的「小作文」解决所有可控性问题！工业界最稳的做法是<strong>「图文锁外观（L2/L3）+ 几何/首尾帧锁运动（L2/L4）+ 精炼 Dense Caption 锁剧情与声音（L1）」</strong>。这也是为什么第 9 章的 <code>LLM → Qwen-Image → MMX-H3</code> 智能体流水线能拍出商业级短片的核心秘诀！
+          </p>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>参考来源：DALL·E 3 / Sora Tech Report、ShareGPT4Video、AuroraCap、CameraCtrl、Wan-VACE</span>
+          <span>下一章：模型架构设计（3D-VAE、音画一体与 MoE vs Dense）→</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

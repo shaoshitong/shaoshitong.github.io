@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>09 LLM 智能体视频生成（LLM → Qwen-Image → MMX-H3） — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.09</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-violet">Chapter 09 · AI 导演智能体</span>
+          <span class="tag tag-cyan">LLM → Qwen-Image → MMX-H3</span>
+          <span class="tag tag-emerald">从单镜头迈向完整成片</span>
+        </div>
+
+        <h1>LLM 驱动的智能体视频生成：从一句话创意到完整短片（LLM → Qwen-Image → MMX-H3）</h1>
+        <p class="lead">
+          哪怕单个视频大模型强到能完美生成 10 秒 2K 音画片段，离「拍出一部 2 分钟有剧情、有人物弧光、有多机位剪辑的短片」依然隔着十万八千里：单模型一口气生成 2 分钟必然忘记主角长相、剧情失控、镜头单调。2025–2026 年最火爆的新范式是 <strong>Agentic Video Generation（智能体视频生产）</strong>——把 <strong>LLM（总导演/编剧） + Qwen-Image（美术/分镜师） + MMX-H3（全能音视频摄影机） + 剪辑/特效引擎</strong> 串成一条闭环自动化制片厂！
+        </p>
+
+        <div class="figure-card">
+          <img src="assets/images/agentic-storyboard-visual.jpg" alt="AI 导演智能体工作流：人物三视图一致锚定、四格电影分镜与多轨时间线">
+          <div class="figure-caption">
+            图 9-1：智能体拍片的核心哲学——「先用图像模型把人物和分镜钉死，再用全能音视频模型逐镜拍活，最后由剪辑智能体拼装成片」。
+          </div>
+        </div>
+
+        <h2 id="why-stack">一、为什么是 <code>LLM → Qwen-Image → MMX-H3</code> 这个黄金铁三角？</h2>
+        <div class="card-grid">
+          <div class="info-card">
+            <h4>🧠 大脑：LLM / VLM（编剧 + 导演 + 质检员）</h4>
+            <p>负责拆解故事结构、写分镜脚本（JSON Schema）、管理全局资产表（角色/场景/道具 ID）、分配景别与运镜节奏，并在生成后当「审片导演」揪出穿帮镜头自动打回重拍。</p>
+          </div>
+          <div class="info-card">
+            <h4>🎨 美术：Qwen-Image / Qwen-VL（定妆 + 分镜）</h4>
+            <p>极强的中英文语义理解、精准文字渲染与多图编辑/一致性能力。先生成<strong>角色三视图定妆照</strong>和<strong>场景概念图</strong>，再严格参照定妆照画出每一镜的<strong>首帧（甚至首尾帧）分镜图</strong>。</p>
+          </div>
+          <div class="info-card">
+            <h4>🎥 摄影机：MiniMax H3 / MMX-H3（原生音画生成）</h4>
+            <p>约 33B 级全能多模态扩散底座，集 <strong>T2V、I2V、Omni-Reference（多主体参考锁定）</strong> 与 <strong>原生立体声对白/音效（最高 2K）</strong> 于一身。把分镜图和角色参考喂进去，一镜到底直接出带台词、带音效的电影镜头！</p>
+          </div>
+        </div>
+
+        <h2 id="seven-steps">二、全链路七步拆解：一部 AI 短片是怎么「拍」出来的？</h2>
+
+        <div class="diagram-box">
+          <div class="diagram-title">
+            <span>Agentic Video 七阶段自动化制片流水线（含 VLM 闭环重拍机制）</span>
+            <span class="tag tag-amber">剧本 → 人物 → 分镜 → 生成 → 组合 → 剪辑 → 特效</span>
+          </div>
+          <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, PingFang SC, sans-serif">
+            <defs>
+              <marker id="arr9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+              </marker>
+              <marker id="arrRose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#fb7185"/>
+              </marker>
+            </defs>
+
+            <!-- Row 1: Steps 1-4 -->
+            <rect x="16" y="24" width="185" height="82" rx="8" fill="#121a28" stroke="#38bdf8"/>
+            <text x="108" y="50" fill="#38bdf8" font-size="13" font-weight="700" text-anchor="middle">① 剧本与资产表</text>
+            <text x="108" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">LLM 拆解三幕剧结构</text>
+            <text x="108" y="90" fill="#94a3b8" font-size="10.5" text-anchor="middle">提取角色/场景/台词表</text>
+
+            <line x1="201" y1="65" x2="236" y2="65" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <rect x="240" y="24" width="185" height="82" rx="8" fill="#161428" stroke="#a78bfa"/>
+            <text x="332" y="50" fill="#a78bfa" font-size="13" font-weight="700" text-anchor="middle">② 人物与场景设计</text>
+            <text x="332" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">Qwen-Image 生成三视图</text>
+            <text x="332" y="90" fill="#94a3b8" font-size="10.5" text-anchor="middle">锁定正/侧/背+服饰材质</text>
+
+            <line x1="425" y1="65" x2="460" y2="65" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <rect x="464" y="24" width="185" height="82" rx="8" fill="#161428" stroke="#a78bfa"/>
+            <text x="556" y="50" fill="#c4b5fd" font-size="13" font-weight="700" text-anchor="middle">③ 分镜关键帧制作</text>
+            <text x="556" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">Qwen-Image 逐镜出图</text>
+            <text x="556" y="90" fill="#94a3b8" font-size="10.5" text-anchor="middle">锚定首帧/尾帧构图光影</text>
+
+            <line x1="649" y1="65" x2="684" y2="65" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <rect x="688" y="24" width="196" height="82" rx="8" fill="#0f231e" stroke="#34d399"/>
+            <text x="786" y="50" fill="#34d399" font-size="13" font-weight="700" text-anchor="middle">④ MMX-H3 音画生成</text>
+            <text x="786" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">I2V + Omni-Ref 多主控</text>
+            <text x="786" y="90" fill="#94a3b8" font-size="10.5" text-anchor="middle">单次输出 2K 画面+对白音效</text>
+
+            <!-- Connector down -->
+            <path d="M 786 106 L 786 142 L 786 164" fill="none" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <!-- Row 2: Steps 5-7 (Right to Left) -->
+            <rect x="640" y="168" width="244" height="82" rx="8" fill="#21190e" stroke="#fbbf24"/>
+            <text x="762" y="194" fill="#fbbf24" font-size="13" font-weight="700" text-anchor="middle">⑤ 组合与跨镜头衔接</text>
+            <text x="762" y="216" fill="#cbd5e1" font-size="11" text-anchor="middle">尾帧继承 / 动作匹配 / VLM 质检</text>
+            <text x="762" y="234" fill="#fb7185" font-size="10.5" text-anchor="middle">穿帮镜头自动触发局部重绘 (Retry)</text>
+
+            <!-- Retry loop arrow -->
+            <path d="M 670 168 C 670 132, 710 132, 710 108" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrRose)"/>
+
+            <line x1="640" y1="209" x2="594" y2="209" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <rect x="330" y="168" width="260" height="82" rx="8" fill="#121a28" stroke="#60a5fa"/>
+            <text x="460" y="194" fill="#60a5fa" font-size="13" font-weight="700" text-anchor="middle">⑥ 智能剪辑（Auto-Editing）</text>
+            <text x="460" y="216" fill="#cbd5e1" font-size="11" text-anchor="middle">L-Cut / J-Cut 声画错位剪辑</text>
+            <text x="460" y="234" fill="#94a3b8" font-size="10.5" text-anchor="middle">踩点掐头去尾、情绪节拍控制</text>
+
+            <line x1="330" y1="209" x2="284" y2="209" stroke="#38bdf8" stroke-width="1.8" marker-end="url(#arr9)"/>
+
+            <rect x="16" y="168" width="264" height="82" rx="8" fill="#1d1224" stroke="#f472b6"/>
+            <text x="148" y="194" fill="#f472b6" font-size="13" font-weight="700" text-anchor="middle">⑦ 特效、调色与混音母带</text>
+            <text x="148" y="216" fill="#cbd5e1" font-size="11" text-anchor="middle">LUT 统一调色 · 转场特效 · 字幕</text>
+            <text x="148" y="234" fill="#94a3b8" font-size="10.5" text-anchor="middle">BGM 避让对白（Ducking）成片导出</text>
+          </svg>
+        </div>
+
+        <h3>Step 1：剧本制作（Script &amp; Bible Generation）</h3>
+        <p>
+          用户只给一句创意，比如「拍一段 45 秒的赛博朋克短片：女黑客在雨夜天台破解无人机，拿到芯片后纵身跳下逃离」。编剧 Agent（LLM）不会直接乱写提示词，而是先输出一份结构化的<strong>制片圣经（Production Bible）</strong>：
+        </p>
+        <ul>
+          <li><strong>全局视觉风格锁</strong>：色温（青橙赛博）、胶片颗粒感、镜头焦段（Anamorphic 变形宽银幕）。</li>
+          <li><strong>角色与道具档案</strong>：给每个角色分配固定 ID（如 <code>CHAR_01</code>）和不可更改的硬特征（橘红色短发、左颊荧光疤痕、黑色反光冲锋衣）。</li>
+          <li><strong>分镜表（Shot List）</strong>：拆分成 8–12 个 3–6 秒的镜头，明确每一镜的景别（远景建立环境 → 中景交代动作 → 特写展现微表情与芯片细节 → 动感跟拍收尾）、台词和音效需求。</li>
+        </ul>
+
+        <h3>Step 2：人物与场景设计（Character Turnaround &amp; Asset Bank）</h3>
+        <p>
+          拍连续剧最怕「第 1 镜主角长这样，第 2 镜换了个亲戚」。智能体会把 <code>CHAR_01</code> 的描述喂给 <strong>Qwen-Image</strong>，先生成一张标准的<strong>角色三视图定妆表（正面 / 侧面 / 背面 + 特写表情）</strong>和核心场景的空镜概念图，存入项目资产库（Asset Bank）。后续所有镜头只要出现 <code>CHAR_01</code>，全部强制挂载这张定妆照作为参考！
+        </p>
+
+        <h3>Step 3：分镜制作（Storyboard &amp; Keyframes via Qwen-Image）</h3>
+        <p>
+          直接拿纯文字去文生视频（T2V）抽卡，构图和站位极难精准符合导演意图；而且视频抽卡一次贵 10 倍。<strong>聪明做法是先用 Qwen-Image 把每一镜的「首帧关键帧」（必要时加「尾帧」）全部画出来！</strong>
+        </p>
+        <p>
+          在图生图阶段，Qwen-Image 可以同时参考「角色三视图 + 场景空镜 + 构图描述」，一秒钟低成本刷出极高一致性的分镜图。甚至可以一次性生成 2×2 / 3×3 的<strong>多格连环分镜板（Multi-Panel Storyboard）</strong>，利用同图自注意力天然保证色调、光影和脸型 100% 统一，再切分超分作为每镜首帧！
+        </p>
+
+        <h3>Step 4：视频生成（MMX-H3 逐镜拍活）</h3>
+        <p>
+          拿到锁定好的分镜首帧图、角色参考图和这一镜的 Dense AV Prompt 后，编排引擎（如 ComfyUI / Python Agent Harness）并发调用 <strong>MiniMax H3（MMX-H3）</strong>：
+        </p>
+        <ul>
+          <li><strong>首帧 I2V 模式</strong>：锁死起始构图，把画面自然推演 5–10 秒。</li>
+          <li><strong>首尾帧模式（First-Last Frame）</strong>：针对需要精确过渡到下一个动作的镜头，同时喂首帧和尾帧，MMX-H3 自动补出丝滑的物理运动轨迹。</li>
+          <li><strong>Omni-Reference 模式</strong>：当镜头里出现主角转身、大幅度运镜时，同时传入角色三视图参考，防止侧脸/背影崩坏。</li>
+          <li><strong>原生音画输出</strong>：MMX-H3 直接在同一 pass 里吐出带口型同步对白、雨声、无人机嗡鸣的立体声音轨！</li>
+        </ul>
+
+        <h3>Step 5：组合与闭环质检（Assembly &amp; VLM Self-Correction）</h3>
+        <p>
+          AI 生成不可能 100% 一次成功。成熟智能体（如 ViMax / MovieAgent 架构）在生成完每镜后，会自动调用 <strong>VLM 审片 Agent（如 Qwen3-VL）</strong> 抽帧检查：
+        </p>
+        <ul>
+          <li>人脸余弦相似度（ArcFace / PE）是否跌破阈值？</li>
+          <li>有没有明显的多手、穿模、物体凭空消失？</li>
+          <li>动作有没有真的按脚本执行（而不是原地发呆）？</li>
+        </ul>
+        <p>
+          一旦质检打回，Agent 会<strong>自动微调 Seed、加强运镜词或调低 Motion 强度，只重拍坏掉的那一镜</strong>，完全不用整部片子推倒重来！需要连续长镜头时，还会自动抽取上一镜的最后一帧作为下一镜的首帧实现无缝衔接。
+        </p>
+
+        <h3>Step 6 &amp; Step 7：智能剪辑、特效与音画母带合成</h3>
+        <p>
+          把所有合格镜头交给剪辑工具链（FFmpeg / MoviePy / CapCut API / DaVinci 脚本）：
+        </p>
+        <ol>
+          <li><strong>节奏剪辑与 J-Cut / L-Cut</strong>：切掉每镜开头 0.2s 的起势僵硬帧，用电影级 <strong>J-Cut</strong>（下一镜的声音提前 0.5 秒响起，画面再切过去）制造专业电影感，告别生硬的 PPT 拼接。</li>
+          <li><strong>视觉特效与统一调色（Color Grading）</strong>：给所有镜头套用同一套电影 <strong>3D LUT</strong> 统一黑位与色调，在关键高潮点叠加速度曲线（Speed Ramp）、故障风（Glitch）、光晕或转场粒子特效。</li>
+          <li><strong>多轨混音（Audio Mixing &amp; Ducking）</strong>：底层铺一条连贯的贯穿全片的 BGM 音乐（如 Suno/AudioGen 生成），中层放各镜头的原生环境声与拟音，顶层放清晰人声对白；开启自动<strong>侧链闪避（Auto-Ducking）</strong>——有人说话时 BGM 自动压低 8dB，最后统一响度标准化到 <code>-14 LUFS</code> 并烧录双语动态字幕！</li>
+        </ol>
+
+        <h2 id="json-schema">三、干货模板：LLM 导演 Agent 输出的标准分镜 JSON Schema</h2>
+        <p>
+          如果你自己想用 Python + ComfyUI 搭一套 <code>LLM → Qwen-Image → MMX-H3</code> 智能体，下面这份经过实战验证的分镜 JSON 结构可以直接抄作业：
+        </p>
+
+        <pre><code>{
+  "project_style": "Cyberpunk noir, 35mm anamorphic lens, teal-and-magenta neon rain, high contrast film grain",
+  "assets": {
+    "CHAR_NOVA": {
+      "desc": "East Asian woman in her 20s, short burnt-orange hair, glowing cyan scar on left cheek, matte black techwear trench coat",
+      "turnaround_img": "assets/char_nova_sheet.png"
+    },
+    "SCENE_ROOF": {
+      "desc": "Rain-soaked skyscraper rooftop in Neo-Tokyo at midnight, holographic billboards in fog",
+      "ref_img": "assets/scene_rooftop.png"
+    }
+  },
+  "shots": [
+    {
+      "shot_id": 1,
+      "duration_sec": 5.0,
+      "camera": "Wide establishing drone push-in",
+      "qwen_image_prompt": "Wide shot of CHAR_NOVA standing on the edge of SCENE_ROOF, back three-quarter view, rain pouring, neon reflections...",
+      "mmx_h3_video_prompt": "Slow cinematic push-in towards CHAR_NOVA as she raises her left wrist holographic terminal. Heavy rain streaks fall past neon signs. [Audio] Heavy rain hitting metal roof, distant siren, low synth hum.",
+      "omni_refs": ["CHAR_NOVA", "SCENE_ROOF"],
+      "transition_to_next": "J-cut 0.4s audio lead"
+    },
+    {
+      "shot_id": 2,
+      "duration_sec": 4.5,
+      "camera": "Extreme close-up on face and glowing data chip",
+      "qwen_image_prompt": "Close-up of CHAR_NOVA looking down at a glowing cyan microchip between her fingers, rain droplets on face...",
+      "mmx_h3_video_prompt": "CHAR_NOVA looks up sharply toward the camera with determination and speaks calmly: &lt;S&gt;We're in. Shut down the grid.&lt;E&gt; Subtle handheld micro-shake. [Audio] Crisp rain on jacket, electronic lock click, clear female voice.",
+      "omni_refs": ["CHAR_NOVA"],
+      "transition_to_next": "Hard cut on beat"
+    }
+  ]
+}</code></pre>
+
+        <div class="callout tip">
+          <div class="callout-title">🎬 延伸体验：去第 10 章看真实的音画片段！</div>
+          <p>
+            想知道单镜原生音视频生成出来的实际观感（包括人物特写微表情、真实对白口型和环境音）到底有多惊艳？立刻点击下方进入 <a href="10-video-showcase-lab.html">第 10 章：音视频案例实验室</a>，亲自打开声音播放并体验一键同步对比！
+          </p>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>参考生态：MiniMax H3 (MMX-H3)、Qwen-Image / Qwen3-VL、ViMax Agentic Video、ComfyUI Multi-Stage Pipelines</span>
+          <span>下一章：真实音视频案例实验室与同步对比 →</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
