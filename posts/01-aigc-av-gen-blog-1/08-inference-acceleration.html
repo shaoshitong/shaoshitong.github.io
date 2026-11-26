@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>08 推理加速：量化、稀疏注意力、缓存与并行 — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.08</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-amber">Chapter 08 · 推理加速</span>
+          <span class="tag tag-cyan">FP8 / NVFP4 量化</span>
+          <span class="tag tag-emerald">SageAttn / TeaCache / Ulysses</span>
+        </div>
+
+        <h1>Inference 推理加速四板斧：如何把生成耗时从 3 分钟打到 5 秒？</h1>
+        <p class="lead">
+          视频生成最劝退的痛点就是「太慢、太贵」：一个 14B–30B 参数的原生 DiT 模型，如果直接用 BF16 裸跑 50 步，单张 H100 生成一条 5 秒 720p 视频要花 <strong>2–4 分钟</strong>，消费级显卡直接显存爆炸。这一章我们把工业界用来压榨硬件极限的<strong>推理加速四板斧</strong>（量化、稀疏注意力、特征缓存、多卡并行）一次拆解清楚，每一招都能叠 buff！
+        </p>
+
+        <div class="figure-card">
+          <img src="assets/images/inference-accel-visual.jpg" alt="GPU 推理加速、稀疏注意力与低比特量化微块视觉概念图">
+          <div class="figure-caption">
+            图 8-1：推理优化的本质是砍掉「无效精度」「无效注意力连接」和「重复时间步计算」，把稠密混沌的计算流压缩成极速稀疏低比特激光通道。
+          </div>
+        </div>
+
+        <h2 id="quantization">一、第一板斧：模型量化（BF16 → FP8 → INT8 → NVFP4）</h2>
+        <p>
+          说人话，<strong>量化就是把占地方、算得慢的 16 位浮点数（BF16），无损或微损地压成 8 位（FP8/INT8）甚至 4 位（INT4/NVFP4）</strong>。不仅显存直接砍半甚至砍到 1/4（让 14B 模型塞进单张消费级 RTX 4090/5090），在 Hopper (H100/H200) 和 Blackwell (B200/RTX 5090) 显卡上，FP8 / FP4 Tensor Core 的算力吞吐直接翻 <strong>2× 到 4×</strong>！
+        </p>
+
+        <h3>为什么视频 DiT 不能直接「无脑量化」？—— 离群值（Outliers）陷阱</h3>
+        <p>
+          和 LLM 一样，视频 DiT 线性层的激活值里藏着极少数比正常值大几十倍的「尖刺离群值（Outliers）」。如果直接对整个张量做暴力缩放量化，99% 的正常数值都会被压成 0，生成出来的视频瞬间糊成色块或者人物五官崩塌。
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>量化方案</th>
+                <th>显存节省</th>
+                <th>实际加速比</th>
+                <th>画质保真与工程实战要点</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>FP8 (W8A8, E4M3)</strong><br>当前工业界甜点</td>
+                <td><strong>~50%</strong></td>
+                <td><strong>1.5× – 1.8×</strong></td>
+                <td>动态范围大，几乎肉眼无损！<strong>关键技巧</strong>：首尾几层、时间步 AdaLN 调制层和 3D-VAE 保持 BF16，中间 DiT Linear 全切 FP8（Per-Token / Per-Block 动态缩放）。</td>
+              </tr>
+              <tr>
+                <td><strong>INT8 SmoothQuant</strong></td>
+                <td><strong>~50%</strong></td>
+                <td><strong>1.4× – 1.7×</strong></td>
+                <td>通过数学等价变换把激活的尖刺平滑转移一部分给权重，适合没有原生 FP8 Tensor Core 的老卡（如 A100 / 3090）。</td>
+              </tr>
+              <tr>
+                <td><strong>W4A4 / SVDQuant / NVFP4</strong><br>(Blackwell 杀手锏)</td>
+                <td><strong>~70–75%</strong></td>
+                <td><strong>2.2× – 3.0×</strong></td>
+                <td><strong>SVDQuant（Nunchaku）</strong>把离群值拆成一条极轻的 16-bit 低秩分支（LoRA 形式），主体全部压到 4-bit！配合 NVIDIA Blackwell 原生 <strong>NVFP4</strong> 微块缩放，4-bit 也能保持极高锐度！</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="sparse-attention">二、第二板斧：稀疏注意力与量化注意力（干掉 O(N²) 大怪兽）</h2>
+        <p>
+          当视频拉长到 720p/1080p、5–10 秒时，<strong>Self-Attention 占比会飙升到总推理耗时的 65%–80%</strong>！好消息是，科学家把视频 DiT 的注意力热力图打印出来一看，乐了：<strong>超过 85%–90% 的注意力权重几乎都是 0！</strong>
+        </p>
+        <p>
+          为什么？因为第 3 秒画面左上角的一片云，根本不需要和第 1 秒右下角的一只鞋做深度语义交互——它主要只关心<strong>相邻帧的同一位置</strong>以及<strong>同一帧的周边区域</strong>！围绕这个发现，2025–2026 年爆发了一批神级加速算子：
+        </p>
+
+        <div class="card-grid-2">
+          <div class="info-card">
+            <h4>⚡ SageAttention / SageAttention2 / 3</h4>
+            <p><strong>思路：</strong>不扔掉连接，而是直接对 Attention 内部的 <code>Q·Kᵀ</code> 矩阵乘做 <strong>INT8 / Per-Thread INT4 量化 + 离群值平滑（Smoothing Q/K）</strong>，Softmax 后的 <code>P·V</code> 用 FP8/FP16。</p>
+            <p><strong>效果：</strong>几乎完全即插即用（免重训），比 FlashAttention-2 快 <strong>2×–3×</strong>，画质损失几乎为零，已成为开源社区标配！</p>
+          </div>
+          <div class="info-card">
+            <h4>⚡ Radial Attention / STA / SpargeAttn / SLA</h4>
+            <p><strong>思路：</strong><strong>真正跳过 80%–90% 无关块的算力！</strong>例如 <strong>Radial Attention</strong> 发现时空注意力随距离呈「径向衰减」，越远的帧只需极稀疏的采样；<strong>SpargeAttn / SLA</strong> 动态预测哪些 Q-K 块分数极低直接跳过，只算高价值块 + 低秩补全。</p>
+            <p><strong>效果：</strong>视频越长加速越恐怖，长视频 Attention 提速 <strong>3×–8×</strong>，且可配合少量微调做到 90% 稀疏度几乎无损！</p>
+          </div>
+        </div>
+
+        <h2 id="feature-caching">三、第三板斧：跨时间步特征缓存（TeaCache / TaylorSeer）</h2>
+        <p>
+          如果你把扩散模型去噪第 21 步、22 步、23 步的中间层输出拿来相减，会发现它们<strong>长得几乎一模一样</strong>！那为什么还要老老实实把 30 层 Transformer 重算一遍呢？
+        </p>
+        <ul>
+          <li><strong>TeaCache（Timestep Embedding-aware Cache）</strong>：盯着每一步变化后的时间步调制输入（Modulated Input）变化幅度看。如果发现当前步和上一步的变化小于阈值，<strong>直接跳过全部 30 层 DiT 计算</strong>，直接把上一步算好的残差特征复用过来！白嫖 <strong>1.5×–2.5× 免费加速</strong>，无需重新训练。</li>
+          <li><strong>First-Block Cache（FBCache）</strong>：更简单粗暴——只跑第 1 个 Transformer Block，看看输出变化大不大；如果变化很小，后面 29 个 Block 全部跳过！</li>
+          <li><strong>TaylorSeer（泰勒预测缓存）</strong>：比死板复用更聪明！既然前几步特征在平滑演化，直接用<strong>一阶/二阶泰勒展开</strong>预测当前步的特征趋势，在跳步比例高达 60%–70% 时画面依然不糊、运动不卡顿！</li>
+        </ul>
+
+        <h2 id="parallelism">四、第四板斧：多卡并行与系统级编译（Ulysses / Ring / CFG Parallel）</h2>
+        <p>
+          如果业务要求「单条 10 秒 1080p 视频必须在 10 秒内吐出来」，单卡再怎么优化也有物理极限，这时候就要把一张大视频切给 4 张或 8 张 GPU 一起算：
+        </p>
+        <ul>
+          <li><strong>CFG Parallel（最零门槛）</strong>：正条件和负条件完全独立，直接分给 2 张卡并行算，几乎线性提速 <strong>1.9×</strong>（当然如果已经做了 CFG 蒸馏，这一步直接省了）。</li>
+          <li><strong>Ulysses Sequence Parallel（DeepSpeed-Ulysses）</strong>：把长视频序列切给 N 张卡，算完 QKV 后做一次 <code>All-to-All</code> 通信，变成「每张卡拿全序列、但只算 1/N 个 Attention Head」，算完再 <code>All-to-All</code> 换回来。<strong>单机 NVLink 内极快！</strong></li>
+          <li><strong>Ring Attention</strong>：卡间组成一个环，一边算当前块 Attention、一边异步把 KV 传给下一张卡，适合跨节点超长视频。现代工业界（如 xDiT / USP）通常把两者结合成 <strong>Unified Sequence Parallel (USP)</strong>：机内走 Ulysses、机间走 Ring！</li>
+          <li><strong>系统级压榨</strong>：开启 <code>torch.compile(mode="max-autotune")</code> 融合碎小算子（RoPE / LayerNorm / GeLU / AdaLN）、启用 CUDA Graph 消除 Python CPU 调度空泡，以及在显存吃紧的端侧设备做 <strong>Block-wise CPU Offload</strong>。</li>
+        </ul>
+
+        <h2 id="speedup-ledger">五、实战加速账本：把四板斧 + 第 6 章蒸馏叠在一起有多恐怖？</h2>
+        <p>
+          以典型 <strong>14B 视频大模型生成 5 秒 720p 视频（单卡 H100 基准）</strong>为例，看一步步叠加优化后的真实耗时变化：
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>优化组合阶段</th>
+                <th>有效前向次数 (NFE)</th>
+                <th>单卡 H100 耗时</th>
+                <th>累计总加速比</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Baseline：BF16 + FlashAttn2 + 50 步 + CFG</td>
+                <td>100 次</td>
+                <td>~185 秒</td>
+                <td>1.0×</td>
+              </tr>
+              <tr>
+                <td>+ FP8 (W8A8) 线性层量化 + torch.compile</td>
+                <td>100 次</td>
+                <td>~105 秒</td>
+                <td>1.8×</td>
+              </tr>
+              <tr>
+                <td>+ SageAttention2 / Radial 稀疏注意力</td>
+                <td>100 次</td>
+                <td>~58 秒</td>
+                <td>3.2×</td>
+              </tr>
+              <tr>
+                <td>+ DMD2 步数 &amp; CFG 蒸馏（50 步 → 4 步，免 CFG）</td>
+                <td><strong>4 次</strong></td>
+                <td><strong>~3.2 秒</strong>（含 VAE 解码 ~4.8 秒）</td>
+                <td><strong>~38× 🚀</strong></td>
+              </tr>
+              <tr>
+                <td>+ 2~4 卡 Ulysses 并行（针对 1080p/长片）</td>
+                <td>4 次</td>
+                <td><strong>&lt; 2.0 秒（准实时！）</strong></td>
+                <td><strong>&gt; 90×</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout pitfall">
+          <div class="callout-title">⚠️ 性能测量的铁律（踩坑必看）</div>
+          <p>
+            注意上表最后两行：当 DiT 经过蒸馏和量化压到 3 秒时，<strong>3D-VAE 解码和 Text Encoder 编码耗时</strong>反而成了新的大头（常常占到 1.5–2 秒）！所以做推理优化一定要做 End-to-End Profiling（区分 Text Encode、DiT Denoise、VAE Decode），并且对 3D-VAE 也要做 FP16/BF16 + Tiled Compile 优化，千万别只盯着 DiT 猛卷而忘了 VAE！
+          </p>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>参考来源：SageAttention2 (ICML 2025)、Radial Attention (2025)、TeaCache (CVPR 2025)、SVDQuant (ICLR 2025)、xDiT</span>
+          <span>下一章：LLM 驱动的智能体视频生成（LLM → Qwen-Image → MMX-H3）→</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

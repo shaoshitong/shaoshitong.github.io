@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06 多阶段训练：Pretrain → Midtrain → SFT → RL → 蒸馏 — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.06</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-emerald">Chapter 06 · 五段式训练</span>
+          <span class="tag tag-cyan">Pretrain → Midtrain → SFT</span>
+          <span class="tag tag-violet">Flow-GRPO &amp; DMD2 / MeanFlow 蒸馏</span>
+        </div>
+
+        <h1>多阶段训练全链路：Pretrain → Midtrain → SFT → RL → 蒸馏</h1>
+        <p class="lead">
+          你不可能把一个刚出生的婴儿直接扔进好莱坞片场让他拍 4K 电影。现代音视频大模型也一样——今天所有的顶级模型（Veo 3、Sora 2、Wan 2.2、HunyuanVideo、Seedance）都彻底吸收了 LLM 的「多阶段培养体系」，演化出标准的<strong>五段式炼丹流水线</strong>：从通识教育、拔高特训、美学精修、赏罚分明的强化学习，一直到最后的极速步数蒸馏。
+        </p>
+
+        <div class="diagram-box">
+          <div class="diagram-title">
+            <span>现代音视频大模型「五段式培养路线图」</span>
+            <span class="tag tag-emerald">数据量递减 · 质量与单步收益递增</span>
+          </div>
+          <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, PingFang SC, sans-serif">
+            <defs>
+              <marker id="arr6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/>
+              </marker>
+            </defs>
+            <!-- Stage 1 -->
+            <rect x="12" y="24" width="156" height="172" rx="10" fill="#121a28" stroke="#38bdf8" stroke-opacity="0.6"/>
+            <text x="90" y="50" fill="#38bdf8" font-size="13.5" font-weight="700" text-anchor="middle">1. Pretrain</text>
+            <text x="90" y="72" fill="#94a3b8" font-size="11" text-anchor="middle">义务教育（学世界）</text>
+            <line x1="28" y1="84" x2="152" y2="84" stroke="#1e293b"/>
+            <text x="24" y="106" fill="#cbd5e1" font-size="11">• 数据：亿级图文+视频</text>
+            <text x="24" y="126" fill="#cbd5e1" font-size="11">• 分辨率：256p → 480p</text>
+            <text x="24" y="146" fill="#cbd5e1" font-size="11">• 目标：万物外观与语义</text>
+            <text x="24" y="176" fill="#38bdf8" font-size="10.5" font-weight="600">算力占比：~65%</text>
+
+            <line x1="168" y1="110" x2="188" y2="110" stroke="#64748b" stroke-width="1.8" marker-end="url(#arr6)"/>
+
+            <!-- Stage 2 -->
+            <rect x="192" y="24" width="156" height="172" rx="10" fill="#121a28" stroke="#60a5fa" stroke-opacity="0.6"/>
+            <text x="270" y="50" fill="#60a5fa" font-size="13.5" font-weight="700" text-anchor="middle">2. Midtrain</text>
+            <text x="270" y="72" fill="#94a3b8" font-size="11" text-anchor="middle">高中冲刺（提分辨率）</text>
+            <line x1="208" y1="84" x2="332" y2="84" stroke="#1e293b"/>
+            <text x="204" y="106" fill="#cbd5e1" font-size="11">• 数据：Top 15% 高质量</text>
+            <text x="204" y="126" fill="#cbd5e1" font-size="11">• 规格：720p/1080p 长片</text>
+            <text x="204" y="146" fill="#cbd5e1" font-size="11">• 目标：强音画同步与退火</text>
+            <text x="204" y="176" fill="#60a5fa" font-size="10.5" font-weight="600">算力占比：~20%</text>
+
+            <line x1="348" y1="110" x2="368" y2="110" stroke="#64748b" stroke-width="1.8" marker-end="url(#arr6)"/>
+
+            <!-- Stage 3 -->
+            <rect x="372" y="24" width="156" height="172" rx="10" fill="#161428" stroke="#a78bfa" stroke-opacity="0.6"/>
+            <text x="450" y="50" fill="#a78bfa" font-size="13.5" font-weight="700" text-anchor="middle">3. SFT</text>
+            <text x="450" y="72" fill="#94a3b8" font-size="11" text-anchor="middle">艺术学院（学审美）</text>
+            <line x1="388" y1="84" x2="512" y2="84" stroke="#1e293b"/>
+            <text x="384" y="106" fill="#cbd5e1" font-size="11">• 数据：Top 1% 电影精品</text>
+            <text x="384" y="126" fill="#cbd5e1" font-size="11">• 规格：全任务指令精调</text>
+            <text x="384" y="146" fill="#cbd5e1" font-size="11">• 目标：光影质感/多任务</text>
+            <text x="384" y="176" fill="#a78bfa" font-size="10.5" font-weight="600">算力占比：~5%</text>
+
+            <line x1="528" y1="110" x2="548" y2="110" stroke="#64748b" stroke-width="1.8" marker-end="url(#arr6)"/>
+
+            <!-- Stage 4 -->
+            <rect x="552" y="24" width="156" height="172" rx="10" fill="#0f211c" stroke="#34d399" stroke-opacity="0.6"/>
+            <text x="630" y="50" fill="#34d399" font-size="13.5" font-weight="700" text-anchor="middle">4. RL 对齐</text>
+            <text x="630" y="72" fill="#94a3b8" font-size="11" text-anchor="middle">片场实战（修物理）</text>
+            <line x1="568" y1="84" x2="692" y2="84" stroke="#1e293b"/>
+            <text x="564" y="106" fill="#cbd5e1" font-size="11">• 算法：DPO / Flow-GRPO</text>
+            <text x="564" y="126" fill="#cbd5e1" font-size="11">• 裁判：多维 Reward 模型</text>
+            <text x="564" y="146" fill="#cbd5e1" font-size="11">• 目标：不穿帮/强指令遵循</text>
+            <text x="564" y="176" fill="#34d399" font-size="10.5" font-weight="600">算力占比：~5%</text>
+
+            <line x1="708" y1="110" x2="728" y2="110" stroke="#64748b" stroke-width="1.8" marker-end="url(#arr6)"/>
+
+            <!-- Stage 5 -->
+            <rect x="732" y="24" width="156" height="172" rx="10" fill="#21190e" stroke="#fbbf24" stroke-opacity="0.7"/>
+            <text x="810" y="50" fill="#fbbf24" font-size="13.5" font-weight="700" text-anchor="middle">5. 步数蒸馏</text>
+            <text x="810" y="72" fill="#94a3b8" font-size="11" text-anchor="middle">天下武功唯快不破</text>
+            <line x1="748" y1="84" x2="872" y2="84" stroke="#1e293b"/>
+            <text x="744" y="106" fill="#cbd5e1" font-size="11">• 算法：DMD2 / MeanFlow</text>
+            <text x="744" y="126" fill="#cbd5e1" font-size="11">• 效果：50步 → 4步/1步</text>
+            <text x="744" y="146" fill="#cbd5e1" font-size="11">• 附赠：CFG 蒸馏再省一半</text>
+            <text x="744" y="176" fill="#fbbf24" font-size="10.5" font-weight="600">算力占比：~5%</text>
+          </svg>
+        </div>
+
+        <h2 id="stage1-pretrain">一、Stage 1：Pretrain（海量低分预训练）</h2>
+        <p>
+          这一阶段烧掉全流程 60%–70% 的算力，目标只有一个：<strong>用最高吞吐量把整个世界的视觉、运动与声音常识塞进模型参数里</strong>。
+        </p>
+        <ul>
+          <li><strong>为什么现在全用 Flow Matching（流匹配）而不是老 DDPM？</strong> 用大白话说，DDPM 像走弯弯曲曲的山路把噪声一点点还原成画面；而 Rectified Flow / Flow Matching 直接在纯噪声 <code>x₁</code> 和真实视频 <code>x₀</code> 之间拉一条<strong>笔直的高速公路</strong>（<code>xₜ = (1-t)x₀ + t·x₁</code>），让模型直接预测恒定速度场 <code>v = x₁ - x₀</code>。路直了，训练更稳，推理步数也能天然砍半！</li>
+          <li><strong>渐进式分辨率（Progressive Resolution）</strong>：从 <code>256p / 360p</code> 短片段（2–4 秒）起步，此时每条视频只有几千个 Token，可以在几千张卡上以极高吞吐量过几亿条图文视频，等语义对齐和基础运动规律学稳了，再升到 <code>480p</code>。</li>
+          <li><strong>Logit-Normal 时间步采样</strong>：不要均匀采样噪声时间步 <code>t</code>！研究发现 <code>t=0</code> 附近太简单、<code>t=1</code> 附近太难，最有学习价值的是<strong>中间噪声区（t ≈ 0.3–0.7）</strong>，采用 Logit-Normal 分布把算力重点砸在中间段，收敛速度肉眼可见提升。</li>
+        </ul>
+
+        <h2 id="stage2-midtrain">二、Stage 2：Midtrain（退火、长时长与高分扩展）</h2>
+        <p>
+          很多团队以前直接从 Pretrain 跳到 SFT，结果发现高分辨率崩坏、视频超过 5 秒就开始画面发黄/漂移。借鉴 LLM（如 DeepSeek / Qwen）的成功经验，2025 年之后工业界普遍把 <strong>Midtrain（中期继续预训练）</strong> 单独拎出来作为一个关键阶段：
+        </p>
+        <ol>
+          <li><strong>数据质量大换血</strong>：踢掉普通网图与低分视频，把图片占比从 50% 骤降到 15% 以下，全面换成 <strong>720p/1080p、长时长（8–15 秒）、高运动幅度、强原声同步</strong>的 Top 15% 数据。</li>
+          <li><strong>Context 长度外推</strong>：把 3D-RoPE 的时间与空间基频用 <strong>YaRN / NTK-Aware</strong> 策略平滑扩展，同时用 <strong>Flow Shift（时间步偏移）</strong>把噪声分布往高噪端微调——因为高分辨率像素间冗余度高，需要更强的噪声才能真正破坏整体结构！</li>
+          <li><strong>WSD 学习率退火（Warmup-Stable-Decay）</strong>：在高质量数据上把学习率平滑降下来（Annealing），这一步往往能让画质和物理稳定性发生「脱胎换骨」的质变。</li>
+        </ol>
+
+        <h2 id="stage3-sft">三、Stage 3：SFT（精选美学与多任务指令精调）</h2>
+        <p>
+          Midtrain 结束时，模型已经很强，但画风还有点「素颜记录片」的感觉，不够电影感，或者对 I2V（图生视频）、首尾帧插值、多图参考（Omni-Ref）等具体产品形态还不够顺手。
+        </p>
+        <p>
+          <strong>SFT 阶段</strong>只需要几万到几十万条<strong>人类审美专家精挑细选的 Top 1% 电影级片段</strong>（构图绝美、光影讲究、无任何瑕疵、音画极度干净）+ 人工精细核对过的 Dense Caption。几千个 Step 跑完，模型的「出片质感」会瞬间从手机随手拍跃升到好莱坞大片，同时学会严格遵守首帧锁脸、运镜指令和特定画风。
+        </p>
+
+        <h2 id="stage4-rl">四、Stage 4：RL 后训练（DPO → Flow-GRPO / DanceGRPO）</h2>
+        <p>
+          SFT 已经很美了，为什么 2025–2026 年所有头部实验室都在疯狂卷 <strong>Video RL（视频强化学习）</strong>？
+        </p>
+        <p>
+          因为 SFT 用的依然是像素/潜空间的 MSE 监督 Loss——它只告诉模型「照着标准答案抄」，但<strong>从没严厉惩罚过「多长出一根手指」「杯子穿过桌子」「人嘴没张却发出声音」「忽略了 Prompt 里的第三个条件」</strong>！在 MSE 眼里，多一根手指只占整段视频 0.01% 的像素误差，微不足道；但在人类眼里，这就是 0 分废片！
+        </p>
+
+        <div class="callout tip">
+          <div class="callout-title">🚀 2025–2026 爆火范式：Flow-GRPO 与 DanceGRPO 是怎么把 RL 搬进视频生成的？</div>
+          <p>
+            传统的 Flow Matching 采样是确定性的 ODE（常微分方程），同一个初始噪声永远走出同一条路，根本没法像 LLM 那样「随机探索不同答案」来做强化学习。<strong>Flow-GRPO / DanceGRPO</strong> 用了三招神来之笔彻底打通了这条路：
+          </p>
+          <ol>
+            <li><strong>ODE → SDE 转换</strong>：在 RL Rollout 采样时，临时把确定性 ODE 改写成数学上边缘分布完全等价的<strong>随机微分方程（SDE）</strong>，在每一步注入可控随机扰动，让模型针对同一个 Prompt 探索出 <code>G = 8 ~ 16</code> 条各不相同的生成视频！</li>
+            <li><strong>多维裁判团打分（Multi-Reward Ensemble）</strong>：不再只看一个分数，而是同时给这组视频打五个维度的分——① <strong>VLM 指令遵循分</strong>（有没有漏画元素）、② <strong>物理合理性与防畸变分</strong>（手脚/重力/穿模）、③ <strong>运动自然度与流畅分</strong>、④ <strong>人类美学偏好分</strong>、⑤ <strong>音画与口型同步分（SyncNet / PE-AV）</strong>。</li>
+            <li><strong>组内相对优势更新（Group Relative Advantage）</strong>：不需要额外训一个占满显存的 Critic 价值网络！直接把这组 G 个视频的得分减去组内均值、除以标准差，<strong>好于平均的视频狠狠奖励，差于平均的狠狠压制</strong>，再加一点 KL 散度约束防止「刷分作弊（Reward Hacking，比如把画面饱和度拉爆来骗美学分）」。</li>
+          </ol>
+        </div>
+
+        <h2 id="stage5-distillation">五、Stage 5：步数与 CFG 蒸馏（把 100 次计算压到 4 次！）</h2>
+        <p>
+          经过前四关，你的教师模型（Teacher）画质、物理、音画都无敌了——唯一的问题是<strong>太慢了</strong>：推理一条 5 秒 720p 视频需要 50 步采样，加上 CFG（Classifier-Free Guidance，每步要算一次有条件 + 一次无条件），一共要做 <strong>100 次巨大的 DiT 前向计算</strong>！商用成本根本扛不住。
+        </p>
+        <p>
+          于是最后一关 <strong>Distillation（步数蒸馏）</strong> 登场。它的目标是用极少的步数（4 步、2 步甚至 1 步）且<strong>去掉 CFG 双倍开销</strong>，逼出与 50 步教师模型肉眼难辨的画质！目前主流有三大技术流派：
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>蒸馏流派</th>
+                <th>代表算法</th>
+                <th>大白话原理解析</th>
+                <th>工业界实测评价</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>分布匹配蒸馏<br>(主流王者)</strong></td>
+                <td><strong>DMD / DMD2 / BiDMD / PDMD / TDM</strong></td>
+                <td>不强求学生一步步死抄教师的像素轨迹（否则容易糊），而是同时维护一个「真教师分数网络」和一个「假学生分数网络」，用 KL 散度梯度（+ 可选 GAN 判别器）逼迫<strong>学生 4 步生成的整体分布与教师 50 步分布完全重合</strong>！</td>
+                <td><strong>4 步出片最锐利、细节最像大片</strong>，甚至经常比原版教师更有对比度，是当前视频蒸馏第一主力（Wan / Hunyuan / Seedance 等广泛采用）。</td>
+              </tr>
+              <tr>
+                <td><strong>平均速度流<br>(学术新星)</strong></td>
+                <td><strong>MeanFlow / Decoupled MeanFlow</strong></td>
+                <td>普通 Flow Matching 学的是「瞬时速度」，所以必须切 50 小步积分；MeanFlow 直接通过恒等式让网络学从时间 <code>r</code> 到 <code>t</code> 的<strong>「平均速度（Average Velocity）」</strong>，一步跨过去就等于积分！</td>
+                <td>数学极其优雅，不需要同时在显存里塞 3 个大模型（Teacher + Fake + Generator），1–4 步扩展潜力巨大。</td>
+              </tr>
+              <tr>
+                <td><strong>一致性 / 渐进蒸馏</strong></td>
+                <td><strong>LCM / PCM / Progressive Distillation</strong></td>
+                <td>让轨迹上任意时间点都直接指向同一个终点 <code>x₀</code>，或把步数 64 → 32 → 16 → 8 → 4 逐级折半。</td>
+                <td>训练稳定，但压到 4 步以下时画面容易发灰、发糊、缺乏高频质感，常作为 DMD 的热身初始化阶段。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout warn">
+          <div class="callout-title">💡 顺手白嫖 2× 加速：CFG 蒸馏（Guidance Distillation）</div>
+          <p>
+            几乎所有蒸馏框架都会顺手把 <strong>CFG Scale（比如 w = 5.0）</strong> 烘焙进学生模型里：教师计算目标时用带 CFG 的速度场 <code>v_cfg = v_uncond + w · (v_cond - v_uncond)</code>，而学生推理时<strong>只算 1 次条件前向</strong>就能直接输出带强引导的结果。50 步×2（100 NFE）→ 4 步×1（4 NFE），<strong>直接带来 25 倍推理加速</strong>！
+          </p>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>参考来源：Flow-GRPO (2025)、DanceGRPO (2025)、DMD2 (NeurIPS 2024)、TDM (2025)、MeanFlow (2025)</span>
+          <span>下一章：先 T2V 低分辨率，再 V2V 高分辨率级联架构 →</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

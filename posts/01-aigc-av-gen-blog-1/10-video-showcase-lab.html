@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 音视频案例实验室与同步对比 — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.10</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="index.html">🏠 返回总览</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-emerald">Chapter 10 · 真实音画实验室</span>
+          <span class="tag tag-cyan">8 段可播放原生音画 MP4</span>
+          <span class="tag tag-violet">支持一键同步并排对比</span>
+        </div>
+
+        <h1>音视频案例实验室：真机实测与同步并排对比</h1>
+        <p class="lead">
+          纸上得来终觉浅，看懂音视频生成最好的方式就是<strong>打开声音、逐帧细看</strong>！本实验室内置了 8 段来自开源原生音画一体大模型 <strong>Ovi (Twin Backbone Audio-Video Diffusion)</strong> 的真实输出视频（本地直连播放，零外链卡顿），并提供<strong>一键同步播放 / 暂停 / 拖动进度 / 切换左右声道</strong>的并排对比工具，方便你直观观察 <strong>T2AV（纯文生音画）</strong> 与 <strong>TI2AV（图文生音画）</strong> 在口型同步、光影质感与声音空间感上的差异。
+        </p>
+
+        <div class="callout warn">
+          <div class="callout-title">🔊 观看提示</div>
+          <p>
+            所有视频均包含<strong>模型原生同步生成的音轨</strong>（人声对白、环境音或拟音），并非后期人工配音！并排对比播放器默认开启<strong>左侧音频</strong>（避免双声道打架），点击工具栏上的「🔊 切换音频」即可在左声道 / 右声道 / 全部静音之间一键切换；同时每个视频下方都保留了独立播放、暂停和进度条控件。
+          </p>
+        </div>
+
+        <h2 id="sync-compare-1">一、同步对比实验 ①：纯文生音画 (T2AV) 双案例并排观察</h2>
+        <p>
+          点击下方「▶ 同步播放」或直接拖动蓝色进度条，同时观察两段纯文本驱动（无任何参考图）生成的原生音视频片段，重点留意<strong>物理动态节奏与声音起止点是否毫秒级吻合</strong>：
+        </p>
+
+        <div class="sync-compare-box">
+          <div class="sync-toolbar">
+            <button class="sync-btn" data-sync-play>▶ 同步播放</button>
+            <button class="sync-btn secondary" data-sync-restart>↺ 从头同步</button>
+            <button class="sync-btn secondary" data-sync-mute>🔊 听左侧音频</button>
+            <input class="sync-scrubber" type="range" min="0" max="100" value="0" step="0.5" aria-label="同步进度条">
+            <span class="sync-time">0:00 / 0:00</span>
+          </div>
+          <div class="sync-grid">
+            <div class="sync-pane">
+              <div class="sync-pane-label">
+                <span>左侧 · T2AV Case #1（纯文生音画）</span>
+                <span class="tag tag-cyan">ovi-t2av-1.mp4</span>
+              </div>
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-t2av-1.mp4"></video>
+              <div class="sync-pane-desc">
+                <strong>观察重点：</strong>无参考图条件下，模型如何从纯高斯噪声同时涌现出连贯场景、主体动作与匹配的环境声场。
+              </div>
+            </div>
+            <div class="sync-pane">
+              <div class="sync-pane-label">
+                <span>右侧 · T2AV Case #4（纯文生音画）</span>
+                <span class="tag tag-violet">ovi-t2av-4.mp4</span>
+              </div>
+              <video controls playsinline muted preload="metadata" src="assets/videos/ovi-t2av-4.mp4"></video>
+              <div class="sync-pane-desc">
+                <strong>观察重点：</strong>切换听右侧音频，留意镜头运动变化与声音空间混响、拟音节奏的同步表现。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 id="sync-compare-2">二、同步对比实验 ②：图文生音画 (TI2AV) 人物表演与口型同步</h2>
+        <p>
+          在工业界和第 9 章的智能体流水线里，<strong>TI2AV（首帧图像 + Dense 文本 + 台词脚本）</strong>是最常用的生产模式。下面把两组不同光影氛围的人像表演并排对比，请重点盯住<strong>嘴唇开合、下颌微动、眼神变化与语音音节的对齐精度</strong>：
+        </p>
+
+        <div class="sync-compare-box">
+          <div class="sync-toolbar">
+            <button class="sync-btn" data-sync-play>▶ 同步播放</button>
+            <button class="sync-btn secondary" data-sync-restart>↺ 从头同步</button>
+            <button class="sync-btn secondary" data-sync-mute>🔊 听左侧音频</button>
+            <input class="sync-scrubber" type="range" min="0" max="100" value="0" step="0.5" aria-label="同步进度条">
+            <span class="sync-time">0:00 / 0:00</span>
+          </div>
+          <div class="sync-grid">
+            <div class="sync-pane">
+              <div class="sync-pane-label">
+                <span>左侧 · TI2AV 暗调室内情绪表演</span>
+                <span class="tag tag-emerald">ovi-ti2av-1.mp4</span>
+              </div>
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-ti2av-1.mp4"></video>
+              <div class="sync-pane-desc">
+                <strong>Prompt 摘要：</strong><em>"A young Black woman with dark, curly hair sits with her head bowed and bare shoulders, positioned to the right of the frame in a dimly lit, hazy room..."</em> — 重点看低照度下的肤质保持与压抑情绪语音的契合度。
+              </div>
+            </div>
+            <div class="sync-pane">
+              <div class="sync-pane-label">
+                <span>右侧 · TI2AV 户外自然光中景表演</span>
+                <span class="tag tag-amber">ovi-ti2av-2.mp4</span>
+              </div>
+              <video controls playsinline muted preload="metadata" src="assets/videos/ovi-ti2av-2.mp4"></video>
+              <div class="sync-pane-desc">
+                <strong>Prompt 摘要：</strong><em>"A young woman with long, wavy blonde hair and light-colored eyes is shown in a medium shot against a blurred backdrop of lush green foliage..."</em> — 重点看自然逆光发丝、浅景深背景与清亮人声的统一感。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2 id="solo-gallery">三、更多单镜精赏画廊（独立可控播放）</h2>
+        <p>
+          下面四段视频分别展示了不同景别、光影与动态复杂度的原生音视频样本，点击任意视频即可独立播放、拖动进度或全屏细看：
+        </p>
+
+        <div class="card-grid-2">
+          <div class="video-card">
+            <div class="video-header">
+              <span class="video-title">🎥 T2AV Sample #2</span>
+              <span class="tag tag-cyan">原生 T2AV</span>
+            </div>
+            <div class="video-player-wrap">
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-t2av-2.mp4"></video>
+            </div>
+            <div class="video-meta">
+              <strong>拆解要点：</strong>对应第 5 章「对称双流跨模态注意力」——视觉流与音频流在每一个 DiT Block 中通过物理时间戳 RoPE 双向交换信息。
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-header">
+              <span class="video-title">🎥 T2AV Sample #3</span>
+              <span class="tag tag-cyan">原生 T2AV</span>
+            </div>
+            <div class="video-player-wrap">
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-t2av-3.mp4"></video>
+            </div>
+            <div class="video-meta">
+              <strong>拆解要点：</strong>观察前景主体运动与背景虚化层次，对比传统「先无声视频再 Foley 配音」更容易体会到单次联合去噪的自然度。
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-header">
+              <span class="video-title">🎥 T2AV Sample #5</span>
+              <span class="tag tag-violet">原生 T2AV</span>
+            </div>
+            <div class="video-player-wrap">
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-t2av-5.mp4"></video>
+            </div>
+            <div class="video-meta">
+              <strong>拆解要点：</strong>对应第 1 章与第 2 章——只有把训练数据里的纯 BGM 污染洗干净，模型才能真正学会生成贴合画面的真实原声（Diegetic Sound）。
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-header">
+              <span class="video-title">🎥 TI2AV 特写镜头 #4</span>
+              <span class="tag tag-emerald">特写口型 + 表情</span>
+            </div>
+            <div class="video-player-wrap">
+              <video controls playsinline preload="metadata" src="assets/videos/ovi-ti2av-4.mp4"></video>
+            </div>
+            <div class="video-meta">
+              <strong>拆解要点：</strong>大特写是对视频模型最残酷的考场——任何一点眼珠漂移、嘴角撕裂或音频延迟都会被放大十倍。这段案例很好地展示了高质量 SFT + 精细首帧锚定的威力。
+            </div>
+          </div>
+        </div>
+
+        <h2 id="eval-checklist">四、行家看门道：评审一条 AI 音视频的「6 步质检清单」</h2>
+        <p>
+          以后在公司评审自家模型或者评测竞品（Veo 3 / Sora 2 / MMX-H3 / Wan / LTX-2.5 / Kling）时，别只说「看着还行」，直接用下面这套专业维度的清单逐项打分：
+        </p>
+        <ol>
+          <li><strong>时间一致性（Temporal Consistency）</strong>：盯着发丝、衣领纽扣、背景直线条看——有没有高频闪烁、变形或凭空长出多余物体？</li>
+          <li><strong>物理与因果（Physics &amp; Causality）</strong>：重力方向对不对？碰撞有没有形变和反作用？水花/烟雾/布料的运动符不符合惯性？</li>
+          <li><strong>运动幅度 vs 画质（Motion-Quality Trade-off）</strong>：是不是靠「画面几乎不动」偷懒换来的高画质？大运镜时有没有果冻效应？</li>
+          <li><strong>声画锁相（A/V Sync &amp; Lip-Sync）</strong>：拍手、碰撞、说话嘴唇闭合的瞬间，声音有没有早于或晚于画面超过 80ms？</li>
+          <li><strong>音色与空间感（Audio Fidelity）</strong>：声音有没有金属电音伪影？室内说话带不带室内混响、室外带不带自然风噪底噪？</li>
+          <li><strong>指令遵循（Prompt Adherence）</strong>：Prompt 里要求的 5 个要素（人物、动作、运镜、光影、台词）到底兑现了几个？</li>
+        </ol>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>视频版权归属原开源项目 Ovi (aaxwaz.github.io/Ovi/)，仅作技术学习与对比评测展示</span>
+          <span>下一章：延伸阅读与精选书单（论文、GitHub.io、博客、知乎）→</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

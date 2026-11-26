@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>07 级联生成：先 T2V 低分辨率，再 V2V 高分辨率 — 音视频生成完全指南</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="reading-progress" id="reading-progress"></div>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menu-toggle" aria-label="展开导航">☰</button>
+      <a class="brand-link" href="index.html">
+        <span class="brand-logo">AV</span>
+        <span>音视频生成工程完全指南</span>
+        <span class="brand-badge">Ch.07</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <a class="header-pill" href="10-video-showcase-lab.html">🎬 视频实验室</a>
+      <a class="header-pill" href="11-references-reading-list.html">📚 参考书单</a>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="text" id="sidebar-filter" placeholder="搜索章节关键词...">
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main class="main-content">
+      <article class="article-container">
+        <div class="chapter-meta">
+          <span class="tag tag-cyan">Chapter 07 · 级联架构</span>
+          <span class="tag tag-amber">Low-Res T2V → High-Res V2V</span>
+          <span class="tag tag-emerald">算力救星</span>
+        </div>
+
+        <h1>级联生成：为什么顶级系统都选择「先 T2V 低分，再 V2V 高分」？</h1>
+        <p class="lead">
+          很多刚入行的同学会问一个非常朴素的问题：「既然大家最后都要看 1080p 甚至 4K 视频，为什么不直接端到端一步生成 4K，非要多此一举先画个 480p 的草稿，再用 V2V 超分精修呢？」答案很简单：<strong>这不是妥协，而是遵循信息论与 Transformer 二次方算力定律的最优解！</strong>
+        </p>
+
+        <div class="figure-card">
+          <img src="assets/images/cascade-training-visual.jpg" alt="低分辨率 T2V 运动草图经过光学级联精修变为 4K 超清电影画面的概念图">
+          <div class="figure-caption">
+            图 7-1：Stage 1（低分 T2V）专心搞定「构图、物理规律、大运动与音画节奏」；Stage 2（高分 V2V Refiner）像高精光学镜头一样，在锁死动态结构的前提下把纹理、毛孔、光影与文字拉到极致。
+          </div>
+        </div>
+
+        <h2 id="quadratic-wall">一、算一笔吓人的账：Transformer 的 O(N²) 算力悬崖</h2>
+        <p>
+          假设我们用标准的 <code>4×8×8</code> 3D-VAE + <code>1×2×2</code> Patchify（等效空间下采样 16×，时间下采样 4×），来看一段 <strong>5 秒、24fps（共 120 帧 → 30 个潜空间帧）</strong>的视频在不同分辨率下的 Token 数量与 Full Attention 计算量：
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>目标分辨率</th>
+                <th>单帧空间 Token</th>
+                <th>5 秒总 Token 数 (N)</th>
+                <th>Attention 复杂度 (N²) 相对倍数</th>
+                <th>端到端直接 50 步生成体验</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>480p</strong> (832×480)</td>
+                <td>52 × 30 = 1,560</td>
+                <td><strong>46,800</strong></td>
+                <td><strong>1.0×（基准）</strong></td>
+                <td>丝滑！大运动与全局构图学得又快又稳</td>
+              </tr>
+              <tr>
+                <td><strong>720p</strong> (1280×720)</td>
+                <td>80 × 45 = 3,600</td>
+                <td><strong>108,000</strong></td>
+                <td><strong>5.3×</strong></td>
+                <td>开始吃力，单卡显存告急</td>
+              </tr>
+              <tr>
+                <td><strong>1080p</strong> (1920×1080)</td>
+                <td>120 × 68 = 8,160</td>
+                <td><strong>244,800</strong></td>
+                <td><strong>27.4×</strong></td>
+                <td>惨烈！需要多卡 Context Parallel，且很难学到大范围运动</td>
+              </tr>
+              <tr>
+                <td><strong>4K</strong> (3840×2160)</td>
+                <td>240 × 135 = 32,400</td>
+                <td><strong>972,000（近百万！）</strong></td>
+                <td><strong>431.0× 💥</strong></td>
+                <td>几乎不可行，直接 OOM + 慢到天荒地老</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          更要命的是<strong>「注意力稀释效应」</strong>：在 4K 画面里，每个像素块只占画面的万分之一，让模型从纯高斯白噪声开始，直接协调一百万个 Token 共同演化出「一只豹子从左跑到右、镜头同步推进」的全局物理规律，模型会严重迷失在局部细节里，反而比 480p 更容易出现<strong>肢体扭曲和运动僵硬</strong>！
+        </p>
+
+        <h2 id="two-stage-design">二、两阶段级联（Cascaded Pipeline）到底是怎么配合干活的？</h2>
+        <p>
+          把「规划运动」和「雕琢纹理」彻底解耦，让专业的人干专业的事：
+        </p>
+
+        <div class="diagram-box">
+          <div class="diagram-title">
+            <span>Stage 1 (Low-Res T2AV) → Stage 2 (High-Res V2V Refiner / SR) 级联数据流</span>
+            <span class="tag tag-cyan">省 80%+ 算力 · 画质反而更高</span>
+          </div>
+          <svg viewBox="0 0 880 215" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, PingFang SC, sans-serif">
+            <defs>
+              <marker id="arr7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+              </marker>
+            </defs>
+
+            <!-- Stage 1 -->
+            <rect x="16" y="24" width="235" height="164" rx="10" fill="#121a28" stroke="#38bdf8" stroke-opacity="0.6"/>
+            <text x="133" y="50" fill="#38bdf8" font-size="13.5" font-weight="700" text-anchor="middle">Stage 1 · 低分 Base T2AV</text>
+            <text x="133" y="74" fill="#cbd5e1" font-size="12" text-anchor="middle">480p / 540p + 原生音频</text>
+            <text x="133" y="98" fill="#94a3b8" font-size="11.5" text-anchor="middle">• 搞定构图、运镜、物理动态</text>
+            <text x="133" y="118" fill="#94a3b8" font-size="11.5" text-anchor="middle">• 搞定人物表演与口型/拟音</text>
+            <text x="133" y="142" fill="#34d399" font-size="11.5" text-anchor="middle">可用 20B–30B 大模型全力思考</text>
+            <text x="133" y="168" fill="#7dd3fc" font-size="11" text-anchor="middle">输出：低分 Latent z_low + 音轨</text>
+
+            <line x1="251" y1="106" x2="294" y2="106" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr7)"/>
+
+            <!-- Bridge -->
+            <rect x="298" y="44" width="175" height="124" rx="8" fill="#17142b" stroke="#a78bfa" stroke-opacity="0.6"/>
+            <text x="385" y="72" fill="#c4b5fd" font-size="12.5" font-weight="700" text-anchor="middle">潜空间上采样 + 轻加噪</text>
+            <text x="385" y="98" fill="#cbd5e1" font-size="11.5" text-anchor="middle">Bilinear / Conv 2×~4×</text>
+            <text x="385" y="120" fill="#cbd5e1" font-size="11.5" text-anchor="middle">加噪至 t ≈ 0.3 ~ 0.5</text>
+            <text x="385" y="146" fill="#fbbf24" font-size="11" text-anchor="middle">(给高频纹理留出想象空间)</text>
+
+            <line x1="473" y1="106" x2="516" y2="106" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr7)"/>
+
+            <!-- Stage 2 -->
+            <rect x="520" y="24" width="344" height="164" rx="10" fill="#0f231e" stroke="#34d399" stroke-opacity="0.7"/>
+            <text x="692" y="50" fill="#34d399" font-size="13.5" font-weight="700" text-anchor="middle">Stage 2 · 高分 V2V Refiner / 扩散超分</text>
+            <text x="692" y="74" fill="#e2e8f0" font-size="12" text-anchor="middle">1080p / 2K / 4K（局部窗口/稀疏注意力 + 仅需 1–8 步！）</text>
+            <text x="692" y="100" fill="#cbd5e1" font-size="11.5" text-anchor="middle">• 严格锁定 Stage 1 的轮廓、动作与口型，绝不乱改剧情</text>
+            <text x="692" y="122" fill="#cbd5e1" font-size="11.5" text-anchor="middle">• 疯狂补齐皮肤毛孔、织物纹理、反光水花、清晰文字</text>
+            <text x="692" y="144" fill="#cbd5e1" font-size="11.5" text-anchor="middle">• 音频直通或经轻量 Audio SR 提升至 48kHz 立体声</text>
+            <text x="692" y="170" fill="#6ee7b7" font-size="11.5" font-weight="600" text-anchor="middle">代表：SeedVR / SeedVR2、FlashVSR、LTX-2.5 2-Stage、MovieGen</text>
+          </svg>
+        </div>
+
+        <h2 id="engineering-secrets">三、V2V 高分精修阶段的四大工程秘籍</h2>
+
+        <h3>1. 为什么不能只用传统 CNN 超分（如 Real-ESRGAN）？</h3>
+        <p>
+          传统图像超分（Real-ESRGAN）是<strong>逐帧独立</strong>放大的，有两个致命伤：① 画面会出现恶心的<strong>高频闪烁（Temporal Flickering）</strong>，草地和人脸毛孔每一帧都在跳；② 它只能做「锐化磨皮」，没法凭空补出合理的电影质感细节。而基于 <strong>Video Diffusion / Flow Matching 的 V2V Refiner</strong>（如字节 SeedVR2、FlashVSR、LTX 潜空间精修器）本身带有 3D 时空注意力，能生成<strong>跨帧完全一致的真实高频纹理</strong>！
+        </p>
+
+        <h3>2. 加噪强度（Noise Augmentation）的黄金平衡</h3>
+        <p>
+          把 Stage 1 的低分视频放大后送给 Stage 2，为什么要先加一点噪声（比如加到 <code>t = 0.35</code>）？
+        </p>
+        <ul>
+          <li><strong>加噪太少（t &lt; 0.15）</strong>：Stage 1 低分视频里的模糊伪影、轻微手指畸变会被原封不动锁死，Stage 2 没空间去修复它。</li>
+          <li><strong>加噪太多（t &gt; 0.65）</strong>：Stage 2 开始「自由发挥」，把主角脸画变了、把原本精准对齐的口型画歪了！</li>
+          <li><strong>最佳工业实践</strong>：训练 Stage 2 时就模拟 Stage 1 的真实退化分布（低分下采样 + 轻模糊 + 轻微扩散伪影），并将低分视频作为 <strong>Channel-Concat 条件</strong>喂给模型，配合 1–4 步蒸馏（如 <strong>SeedVR2 一步扩散超分</strong>），既保 100% 结构与口型一致，又能把清晰度拉满！</li>
+        </ul>
+
+        <h3>3. 4K 超大画面防 OOM：空间/时间 Tile 分块融合</h3>
+        <p>
+          就算 Stage 2 只需要 4 步，直接把 4K 视频整块塞进单张 GPU 显存也还是会爆。工程上采用 <strong>Overlapping Spatio-Temporal Tiling（重叠时空分块）</strong>：把 4K 画面切成若干个有 20% 重叠边缘的 1080p 区块，每块在去噪每一步之后用<strong>高斯渐变权重羽化融合（Gaussian Blending）</strong>，彻底消除拼缝，同时把显存峰值直接砍到 1/4！
+        </p>
+
+        <h3>4. 顺手提升帧率：空间超分 + 时间插帧一体化</h3>
+        <p>
+          Stage 1 可以只生成 <code>12fps</code> 或 <code>16fps</code> 的低分视频（Token 数再省一半！），然后由 Stage 2 的 V2V 模型一次性完成 <strong>480p 16fps → 1080p 32fps/48fps</strong> 的时空双维超分（Spatio-Temporal SR），让电影运镜丝滑到飞起！
+        </p>
+
+        <div class="callout tip">
+          <div class="callout-title">🎬 产品设计红利：「秒级低分预览 + 满意再精修」</div>
+          <p>
+            级联架构还有一个巨大的商业产品优势：用户在前端抽卡时，只需要花 <strong>3–5 秒、极低成本</strong>用 Stage 1 刷出 4 个 480p 候选草稿；等用户挑中了构图、动作和配音最满意的那一条，再点击「一键精修 1080p / 4K」，后台调用 Stage 2 V2V 在几秒内出高清成片——<strong>GPU 算力浪费直接减少 75%</strong>！
+          </p>
+        </div>
+
+        <div class="chapter-pager" id="chapter-pager"></div>
+
+        <footer class="site-footer">
+          <span>参考来源：SeedVR / SeedVR2 (ByteDance)、FlashVSR、LTX-Video Multi-Scale Pipeline、Meta MovieGen Spatial Upsampler</span>
+          <span>下一章：Inference 推理加速四板斧（量化、稀疏、缓存与并行）→</span>
+        </footer>
+      </article>
+    </main>
+
+    <aside class="toc-sidebar">
+      <div class="toc-title">本页目录</div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </aside>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
