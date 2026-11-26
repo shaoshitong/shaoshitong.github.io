@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts · Shitong Shao</title>
+  <link rel="stylesheet" href="shared/blog.css">
+</head>
+<body data-lang="zh">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <a href="/">Shitong Shao</a>
+        <span class="topbar-sep">/</span>
+        <span>Posts</span>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language switch">
+        <button class="lang-btn active" data-set-lang="zh">中文</button>
+        <button class="lang-btn" data-set-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="lang-zh">技术博客与笔记</h1>
+    <h1 class="lang-en">Posts &amp; Technical Notes</h1>
+    <p class="lang-zh" style="color:var(--dim);">按 <code>[编号]-[aigc/llm]-[标题]</code> 归档，支持中英文一键切换。</p>
+    <p class="lang-en" style="color:var(--dim);">Archived as <code>[index]-[aigc/llm]-[title]</code> with bilingual (ZH / EN) toggle.</p>
+
+    <div class="post-grid">
+      <a class="post-card" href="04-llm-loop-transformer/">
+        <div class="post-meta" style="margin-bottom:8px;">
+          <span class="badge badge-llm">LLM</span>
+          <span class="post-card-slug" style="margin:0;">04-llm-loop-transformer</span>
+          <span>2026-11</span>
+        </div>
+        <div class="post-card-title lang-zh">Loop Transformer 学习：原理、流派与分析</div>
+        <div class="post-card-title lang-en">Understanding Loop Transformers: Principles, Paradigms, and Analysis</div>
+        <p class="post-card-desc lang-zh">系统梳理 Huginn、Ouro、LoopFormer、Looped-DiT、Closing the Loop、Parcae、Iso-depth、SMELT、Inkling 2 Mini、LPT、LoopFill 及一线社区实测争议。</p>
+        <p class="post-card-desc lang-en">A structured deep dive into Huginn, Ouro, LoopFormer, Looped-DiT, Closing the Loop, Parcae, Iso-depth, SMELT, Inkling 2 Mini, LPT, LoopFill, and practitioner discussions.</p>
+      </a>
+
+      <a class="post-card" href="03-aigc-echosparse/">
+        <div class="post-meta" style="margin-bottom:8px;">
+          <span class="badge badge-aigc">AIGC</span>
+          <span class="post-card-slug" style="margin:0;">03-aigc-echosparse</span>
+          <span>2026</span>
+        </div>
+        <div class="post-card-title lang-zh">EchoSparse：视频扩散模型稀疏注意力与推理加速笔记</div>
+        <div class="post-card-title lang-en">EchoSparse: Sparse Attention and Kernel Acceleration for Video Diffusion</div>
+        <p class="post-card-desc lang-zh">基于知乎专栏原文整理，支持中英文切换阅读。</p>
+        <p class="post-card-desc lang-en">Bilingual edition adapted from the original Zhihu technical post.</p>
+      </a>
+
+      <a class="post-card" href="02-aigc-score-centering-dmd/">
+        <div class="post-meta" style="margin-bottom:8px;">
+          <span class="badge badge-aigc">AIGC</span>
+          <span class="post-card-slug" style="margin:0;">02-aigc-score-centering-dmd</span>
+          <span>2026</span>
+        </div>
+        <div class="post-card-title lang-zh">Score Centering 在 DMD 上的一些思考</div>
+        <div class="post-card-title lang-en">Thoughts on Applying Score Centering to Distribution Matching Distillation (DMD)</div>
+        <p class="post-card-desc lang-zh">从 LLM RL 里的训推不一致与 Score Centering 出发，推导 pathwise 梯度下的 DMD drift 修正，以及迁移到 Flow-GRPO 的简洁实现。</p>
+        <p class="post-card-desc lang-en">Deriving train-inference mismatch and score centering drift correction for pathwise DMD gradients, plus a lightweight adaptation to Flow-GRPO.</p>
+      </a>
+
+      <a class="post-card" href="01-aigc-av-gen-blog-1/">
+        <div class="post-meta" style="margin-bottom:8px;">
+          <span class="badge badge-aigc">AIGC</span>
+          <span class="post-card-slug" style="margin:0;">01-aigc-av-gen-blog-1</span>
+          <span>2026</span>
+        </div>
+        <div class="post-card-title lang-zh">现代音视频生成完全指南：从数据清洗到 AI 导演智能体</div>
+        <div class="post-card-title lang-en">A Complete Guide to Modern Audio-Video Generation: From Data Cleaning to AI Director Agents</div>
+        <p class="post-card-desc lang-zh">12 章原生音视频生成工程与算法连载，涵盖数据管线、PE、Caption、MoE 架构、多阶段训练、推理加速与视频对比实验室。</p>
+        <p class="post-card-desc lang-en">12-chapter engineering and algorithmic guide covering data pipelines, PE, captioning, MoE architectures, multi-stage training, inference acceleration, and a video comparison lab.</p>
+      </a>
+    </div>
+  </main>
+
+  <script src="shared/blog.js"></script>
+</body>
+</html>
